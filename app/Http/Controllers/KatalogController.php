@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Produk; // Import model Produk
+use App\Models\Produk;
 use Illuminate\Http\Request;
 
 class KatalogController extends Controller
@@ -12,10 +12,16 @@ class KatalogController extends Controller
      */
     public function index()
     {
-        // 1. Mengambil semua data dari tabel 'produk' menggunakan Model
-        $products = Produk::all();
-
-        // 2. Mengirim data tersebut ke sebuah view bernama 'katalog'
+        $products = Produk::latest()->paginate(12);
         return view('katalog', ['products' => $products]);
+    }
+
+    /**
+     * Menampilkan halaman detail satu produk.*/
+    public function show($id)
+    {
+    $produk = Produk::findOrFail($id);
+    // Langsung kirim ke view tanpa dihentikan
+    return view('katalog-detail', compact('produk'));
     }
 }
