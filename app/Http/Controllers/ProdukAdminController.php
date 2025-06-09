@@ -13,8 +13,8 @@ class ProdukAdminController extends Controller
      */
     public function index()
     {
-        $products = Produk::latest()->paginate(10); // Ambil data terbaru, 10 per halaman
-        return view('admin.produk.index', compact('products'));
+        $produks = Produk::latest()->paginate(10);
+        return view('admin.produk.index', compact('produks'));
     }
 
     /**
@@ -99,7 +99,7 @@ class ProdukAdminController extends Controller
         if ($produk->gambar) {
             Storage::disk('public')->delete($produk->gambar);
         }
-        
+
         $produk->delete();
 
         return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus!');
