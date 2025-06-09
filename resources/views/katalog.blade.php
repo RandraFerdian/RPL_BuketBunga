@@ -1,54 +1,42 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog - Daara Bouquet</title>
-    {{-- Menggunakan CDN untuk styling Tailwind CSS agar cepat --}}
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+{{-- Memberitahu Blade untuk menggunakan layout 'app' --}}
+@extends('layouts.app')
 
-    <nav class="bg-white shadow-lg">
-        <div class="container mx-auto px-6 py-4">
-            <h1 class="text-3xl font-bold text-pink-500">Daara Bouquet</h1>
-            <p class="text-gray-600">for all your gift needs</p>
-        </div>
-    </nav>
+{{-- Mengatur judul spesifik untuk halaman ini --}}
+@section('title', 'Katalog Produk - Daara Bouquet')
 
-    <main class="container mx-auto px-6 py-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Katalog Produk Kami</h2>
+{{-- Mendefinisikan konten utama untuk halaman ini --}}
+@section('content')
+<div class="container mx-auto px-6 py-12">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-playfair font-bold text-gray-800">Koleksi Kami</h1>
+        <p class="mt-4 text-lg text-gray-600">Temukan buket yang sempurna untuk setiap kesempatan.</p>
+    </div>
 
-        {{-- Grid untuk menampilkan produk --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
 
-            {{-- Looping untuk setiap produk yang dikirim dari Controller --}}
-            @foreach ($products as $product)
-                <div class="bg-white rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300">
-                    {{-- Bagian Gambar Produk --}}
-                    <div class="w-full h-56 bg-gray-200 flex items-center justify-center">
-                        {{-- Nantinya kita akan menampilkan gambar di sini --}}
-                        <span class="text-gray-500">Gambar {{ $product->nama_produk }}</span>
-                    </div>
-
-                    {{-- Bagian Detail Produk --}}
-                    <div class="p-4">
-                        <p class="text-sm text-gray-500">{{ $product->kategori }}</p>
-                        <h3 class="text-lg font-bold text-gray-900 truncate" title="{{ $product->nama_produk }}">
-                            {{ $product->nama_produk }}
-                        </h3>
-                        <p class="mt-2 text-xl font-semibold text-pink-600">
-                            Rp{{ number_format($product->harga, 0, ',', '.') }}
-                        </p>
-                        <button class="mt-4 w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition-colors">
-                            Lihat Detail
-                        </button>
-                    </div>
+        {{-- Looping untuk setiap produk yang dikirim dari Controller --}}
+        @foreach ($products as $product)
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 hover:shadow-2xl transition-all duration-300 group">
+                <div class="w-full h-64 bg-gray-200 overflow-hidden">
+                    {{-- Ganti dengan gambar produk Anda --}}
+                    <img src="https://via.placeholder.com/400x400.png/fce7f3/9d174d?text=DaaraBQT" alt="Gambar {{ $product->nama_produk }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 </div>
-            @endforeach
 
-        </div>
-    </main>
+                <div class="p-5">
+                    <p class="text-sm text-gray-500">{{ $product->kategori }}</p>
+                    <h3 class="mt-1 text-lg font-bold text-gray-900 truncate" title="{{ $product->nama_produk }}">
+                        {{ $product->nama_produk }}
+                    </h3>
+                    <p class="mt-2 text-xl font-semibold text-pink-600">
+                        Rp{{ number_format($product->harga, 0, ',', '.') }}
+                    </p>
+                    <a href="{{ route('katalog.show', $product->id) }}" class="mt-4 block w-full text-center bg-pink-600 text-white py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                        Lihat Detail
+                    </a>
+                </div>
+            </div>
+        @endforeach
 
-</body>
-</html>
+    </div>
+</div>
+@endsection

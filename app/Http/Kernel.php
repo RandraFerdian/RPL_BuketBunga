@@ -62,7 +62,7 @@ class Kernel extends HttpKernel
         'precognitive' => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-
-        'admin' => \App\Http\Middleware\AdminMiddleware::class, // <-- PASTIKAN BARIS INI ADA DAN BENAR
+    
+        'admin' => \App\Http\Middleware\AdminMiddleware::class, // INI YANG PALING PENTING
     ];
 }

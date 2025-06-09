@@ -1,36 +1,64 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{-- Judul halaman akan dinamis, dengan judul default 'Daara Bouquet' --}}
+    <title>{{ $title ?? 'Daara Bouquet' }}</title>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('layouts.navigation')
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="font-poppins bg-gray-50 text-gray-800">
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+    <nav class="bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{{ route('welcome') }}" class="text-2xl font-playfair font-bold text-gray-800">Daara Bouquet</a>
+            <div class="flex items-center space-x-6">
+                <a href="{{ route('katalog.index') }}" class="text-gray-600 hover:text-pink-500">Katalog</a>
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+                @auth
+                    {{-- Jika pengguna sudah login --}}
+                    @if(Auth::user()->role === 'admin')
+                        <a href="{{ route('admin.dashboard') }}" class="text-gray-600 hover:text-pink-500">Admin</a>
+                    @endif
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <a href="{{ route('logout') }}"
+                           onclick="event.preventDefault(); this.closest('form').submit();"
+                           class="text-gray-600 hover:text-pink-500">
+                            Logout
+                        </a>
+                    </form>
+                @else
+                    {{-- Jika pengguna adalah tamu (belum login) --}}
+                    <a href="{{ route('login') }}" class="px-5 py-2 bg-pink-500 text-white rounded-full text-sm font-semibold hover:bg-pink-600 transition-colors">
+                        Login
+                    </a>
+                @endauth
+            </div>
         </div>
-    </body>
+    </nav>
+
+    <main>
+        @yield('content')
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; {{ date('Y') }} Daara Bouquet. Semua Hak Cipta Dilindungi.</p>
+            <p class="text-sm text-gray-400 mt-2">Dibuat dengan ❤️ di Yogyakarta</p>
+        </div>
+    </footer>
+
+</body>
 </html>
