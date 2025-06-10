@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProdukAdminController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PesananAdminController;
+use App\Http\Controllers\CartController;
 
 // Rute untuk Landing Page (welcome.blade.php)
 Route::get('/', function () {
@@ -44,6 +45,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/pesanan/{transaksi}', [PesananAdminController::class, 'show'])->name('pesanan.show');
     Route::put('/admin/pesanan/{transaksi}', [PesananAdminController::class, 'update'])->name('pesanan.update');
 });
+
+// Rute untuk halaman checkout
+Route::get('/keranjang', [CartController::class, 'index'])->name('cart.index');
+Route::post('/keranjang/tambah', [CartController::class, 'add'])->name('cart.add');
+Route::patch('/keranjang/update/{productId}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/keranjang/hapus', [CartController::class, 'remove'])->name('cart.remove');
 
 // Rute untuk autentikasi (login, register, dll)
 require __DIR__.'/auth.php';

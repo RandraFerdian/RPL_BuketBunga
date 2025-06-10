@@ -61,6 +61,23 @@
                     </div>
                 </div>
 
+                {{-- Tambah ke keranjang --}}
+                <form action="{{ route('cart.add') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $produk->id }}">
+
+                    <div class="mt-8 flex items-center space-x-6">
+                        <label for="quantity" class="text-sm font-medium">Jumlah:</label>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" class="w-20 text-center border-gray-300 rounded-md shadow-sm">
+                    </div>
+
+                    <div class="mt-6">
+                        <button type="submit" class="w-full px-8 py-4 bg-pink-500 text-white font-bold rounded-lg text-lg hover:bg-pink-600 transition-colors shadow-lg">
+                            + Tambah ke Keranjang
+                        </button>
+                    </div>
+                </form>
+
                 {{-- Tombol Aksi (Pesan) --}}
                 <form action="{{ route('checkout.show') }}" method="POST" x-data="{ quantity: 1 }">
                     @csrf
