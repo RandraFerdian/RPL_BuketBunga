@@ -4,7 +4,9 @@
 @section('content')
 <div class="bg-white py-12">
     <div class="container mx-auto px-6 text-center max-w-2xl">
-        <svg class="mx-auto w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <svg class="mx-auto w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
         <h1 class="text-4xl font-playfair font-bold mt-4">Terima Kasih Atas Pesanan Anda!</h1>
         <p class="mt-4 text-gray-600">Pesanan Anda dengan ID **#{{ $transaksi->id }}** telah kami terima. Mohon selesaikan pembayaran untuk kami proses lebih lanjut.</p>
 
@@ -16,7 +18,7 @@
                 <h3 class="text-lg font-semibold">Silakan Lakukan Pembayaran via QRIS</h3>
                 <p class="text-sm text-gray-500 mb-4">Scan QR code di bawah ini menggunakan aplikasi e-wallet Anda (GoPay, OVO, Dana, dll.)</p>
                 {{-- Ganti dengan gambar QRIS Anda yang asli --}}
-                <img src="https://i.imgur.com/g3v1v2f.png" alt="Contoh QRIS" class="mx-auto w-64 h-64 border p-2">
+                <img src="{{ asset('images/qris-contoh.jpg') }}" alt="Scan QRIS untuk Pembayaran" class="mx-auto max-w-xs border p-2 rounded-lg shadow-sm">
                 <p class="mt-4 text-xs text-gray-500">**PENTING**: Ini adalah halaman simulasi. Pada aplikasi nyata, QR code ini akan unik untuk setiap transaksi.</p>
             </div>
         </div>
