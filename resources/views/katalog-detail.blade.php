@@ -62,12 +62,26 @@
                 </div>
 
                 {{-- Tombol Aksi (Pesan) --}}
-                <div class="mt-10">
-                    <button class="w-full px-8 py-4 bg-gray-800 text-white font-bold rounded-lg text-lg hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all shadow-lg">
-                        Pesan Sekarang via WhatsApp
-                    </button>
-                    <p class="text-center text-xs text-gray-500 mt-2">Fitur keranjang belanja akan segera hadir!</p>
-                </div>
+                <form action="{{ route('checkout.show') }}" method="POST" x-data="{ quantity: 1 }">
+                    @csrf
+                    {{-- Mengirim ID produk secara tersembunyi --}}
+                    <input type="hidden" name="product_id" value="{{ $produk->id }}">
+
+                    <div class="mt-8 flex items-center space-x-6">
+                        <div class="flex items-center border border-gray-300 rounded-lg">
+                            <button type="button" @click="if (quantity > 1) quantity--" class="px-4 py-2 text-lg font-bold text-gray-700 hover:bg-gray-200 rounded-l-lg">-</button>
+                            <input type="text" name="quantity" x-model="quantity" class="w-16 text-center font-bold border-t border-b border-gray-300 focus:outline-none">
+                            <button type="button" @click="quantity++" class="px-4 py-2 text-lg font-bold text-gray-700 hover:bg-gray-200 rounded-r-lg">+</button>
+                        </div>
+                        <p class="text-sm text-gray-500">Jumlah</p>
+                    </div>
+
+                    <div class="mt-6">
+                        <button type="submit" class="w-full px-8 py-4 bg-gray-800 text-white font-bold rounded-lg text-lg hover:bg-gray-700 transition-colors shadow-lg">
+                            Pesan Sekarang
+                        </button>
+                    </div>
+                </form>
             </div>
 
         </div>
