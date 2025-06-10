@@ -43,8 +43,8 @@
             {{-- Kolom Kanan - Status & Aksi --}}
             <div class="bg-gray-50 p-6 rounded-lg self-start">
                 <h3 class="text-lg font-bold mb-4">Status Pesanan</h3>
-                
-                <form action="{{ route('pesanan.update', $transaksi->id) }}" method="POST">
+
+                <form action="{{ route('admin.pesanan.update', $transaksi->id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     
@@ -61,7 +61,7 @@
                     <button type="submit" class="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Update Status</button>
                 </form>
                 
-                <a href="{{ route('pesanan.index') }}" class="inline-block mt-6 text-indigo-600 hover:text-indigo-900">&larr; Kembali ke Daftar Pesanan</a>
+                <a href="{{ route('admin.pesanan.index') }}" class="inline-block mt-6 text-indigo-600 hover:text-indigo-900">&larr; Kembali ke Daftar Pesanan</a>
             </div>
         </div>
     </div>

@@ -14,7 +14,7 @@
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 bg-white border-b border-gray-200">
                 
-                <form method="POST" action="{{ route('produk.update', $produk->id) }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('admin.produk.update', $produk->id) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -68,7 +68,7 @@
                     </div>
 
                     <div class="flex items-center justify-end mt-6">
-                        <a href="{{ route('produk.index') }}" class="text-gray-600 mr-4">Batal</a>
+                        <a href="{{ route('admin.produk.index') }}" class="text-gray-600 mr-4">Batal</a>
                         <button type="submit" class="px-5 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Simpan Perubahan</button>
                     </div>
                 </form>

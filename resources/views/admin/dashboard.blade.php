@@ -1,8 +1,6 @@
-@extends('layouts.app') {{-- Memberitahu file ini untuk memakai layout app.blade.php --}}
+@extends('layouts.app')
 
-@section('content') {{-- Memulai bagian konten yang akan dikirim ke @yield('content') --}}
-
-{{-- Header yang tadinya ada di slot, kita buat manual di sini --}}
+@section('content')
 <header class="bg-white shadow-sm">
     <div class="container mx-auto px-6 py-5">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -11,7 +9,6 @@
     </div>
 </header>
 
-{{-- Konten utama halaman --}}
 <div class="py-12">
     <div class="container mx-auto px-6">
         {{-- KARTU STATISTIK --}}
@@ -54,14 +51,16 @@
             </div>
         </div>
         
-        {{-- AKSI CEPAT & PESANAN TERBARU --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-1">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <h3 class="text-lg font-semibold mb-4">Aksi Cepat</h3>
                     <div class="space-y-4">
-                        <a href="{{ route('produk.create') }}" class="block w-full text-center px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">Tambah Produk Baru</a>
-                        <a href="{{ route('produk.index') }}" class="block w-full text-center px-4 py-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Lihat Semua Produk</a>
+                        <a href="{{ route('admin.produk.create') }}" class="block w-full text-center px-4 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">Tambah Produk Baru</a>
+                        <a href="{{ route('admin.produk.index') }}" class="block w-full text-center px-4 py-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Lihat Semua Produk</a>
+                        
+                        {{-- PENAMBAHAN 1: Tombol untuk ke halaman manajemen pesanan --}}
+                        <a href="{{ route('admin.pesanan.index') }}" class="block w-full text-center px-4 py-3 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">Lihat Semua Pesanan</a>
                     </div>
                 </div>
             </div>
@@ -77,6 +76,8 @@
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pelanggan</th>
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        {{-- PENAMBAHAN 2: Judul kolom Aksi --}}
+                                        <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
@@ -92,10 +93,15 @@
                                                     {{ ucfirst($pesanan->status_konfirmasi) }}
                                                 </span>
                                             </td>
+                                            {{-- PENAMBAHAN 2: Tombol/Link Aksi --}}
+                                            <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                                <a href="{{ route('admin.pesanan.show', $pesanan->id) }}" class="text-indigo-600 hover:text-indigo-900">Detail</a>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="3" class="px-4 py-3 text-center text-gray-500">Belum ada pesanan.</td>
+                                            {{-- colspan diubah menjadi 4 --}}
+                                            <td colspan="4" class="px-4 py-3 text-center text-gray-500">Belum ada pesanan.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

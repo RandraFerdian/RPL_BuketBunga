@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="hidden sm:flex items-center space-x-5">
-                    <form action="{{ route('produk.search') }}" method="GET" class="w-full max-w-xs">
+                    <form action="{{ route('katalog.search') }}" method="GET" class="w-full max-w-xs">
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>

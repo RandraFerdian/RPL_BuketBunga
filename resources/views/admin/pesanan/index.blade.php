@@ -43,7 +43,7 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <a href="{{ route('pesanan.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900">Lihat Detail</a>
+                                        <a href="{{ route('admin.pesanan.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900">Lihat Detail</a>
                                     </td>
                                 </tr>
                             @empty

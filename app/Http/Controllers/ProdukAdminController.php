@@ -60,7 +60,7 @@ class ProdukAdminController extends Controller
         ]);
 
         // 5. Redirect dengan pesan sukses
-        return redirect()->route('produk.index')->with('success', 'Produk berhasil ditambahkan!');
+        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil ditambahkan!');
     }
 
     /**
@@ -110,7 +110,7 @@ class ProdukAdminController extends Controller
         );
 
         // 5. Redirect dengan pesan sukses
-        return redirect()->route('produk.index')->with('success', 'Produk berhasil diperbarui!');
+        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diperbarui!');
     }
 
     /**
@@ -129,6 +129,6 @@ class ProdukAdminController extends Controller
         // Hapus data produk
         $produk->delete();
 
-        return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus!');
+        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil dihapus!');
     }
 }
