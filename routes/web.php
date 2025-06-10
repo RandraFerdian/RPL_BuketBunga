@@ -50,6 +50,7 @@ Route::delete('/keranjang/hapus', [CartController::class, 'remove'])->name('cart
 Route::middleware('auth')->group(function () {
     // Halaman detail produk
     Route::get('/katalog/{produk}', [KatalogController::class, 'show'])->name('katalog.show');
+    Route::get('/search', [KatalogController::class, 'search'])->name('produk.search');
 
     // Halaman profil pengguna
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

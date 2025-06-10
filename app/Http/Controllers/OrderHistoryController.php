@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Transaksi;
 use Illuminate\View\View;
 
 class OrderHistoryController extends Controller
@@ -14,12 +14,10 @@ class OrderHistoryController extends Controller
      */
     public function index(): View
     {
-        // 1. Ambil data transaksi milik user yang sedang login.
-        //    Pastikan nama relasi di Model User adalah 'transaksi()'.
-        //    'with('detailTransaksi')' untuk memuat detailnya agar lebih efisien.
+        // Ambil semua transaksi milik user yang sedang login, urutkan dari yang terbaru
+        // dan muat relasi 'detailTransaksi' untuk efisiensi
         $orders = Auth::user()->transaksi()->with('detailTransaksi')->latest()->paginate(10);
 
-        // 2. Hanya boleh ada satu baris return.
         return view('riwayat-pesanan.index', compact('orders'));
     }
 
@@ -33,7 +31,7 @@ class OrderHistoryController extends Controller
             abort(403, 'AKSES DITOLAK');
         }
 
-        // Muat relasi detail transaksi beserta info produknya untuk ditampilkan.
+        // Muat relasi detail transaksi beserta info produknya untuk ditampilkan
         $transaksi->load('detailTransaksi.produk');
 
         return view('riwayat-pesanan.show', compact('transaksi'));
