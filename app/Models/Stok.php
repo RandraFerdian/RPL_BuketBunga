@@ -15,6 +15,7 @@ class Stok extends Model
         'id_produk',
         'jumlah',
         'status_stok',
+        'tanggal_cek', // <-- TAMBAHKAN INI
     ];
 
     /**

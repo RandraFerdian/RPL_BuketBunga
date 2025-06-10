@@ -23,10 +23,6 @@
                         <input type="text" name="nama_produk" id="nama_produk" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ old('nama_produk', $produk->nama_produk) }}" required>
                     </div>
 
-                    {{-- =================================================== --}}
-                    {{-- ============ BAGIAN YANG DITAMBAHKAN ============ --}}
-                    {{-- =================================================== --}}
-
                     <div class="mb-4">
                         <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
                         <input type="text" name="kategori" id="kategori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ old('kategori', $produk->kategori) }}" required>
@@ -54,9 +50,14 @@
                         <textarea name="deskripsi" id="deskripsi" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('deskripsi', $produk->deskripsi) }}</textarea>
                     </div>
 
-                    {{-- =================================================== --}}
-                    {{-- ============ AKHIR BAGIAN TAMBAHAN ============ --}}
-                    {{-- =================================================== --}}
+                    {{-- ============================================= --}}
+                    {{-- ============ INPUT STOK YANG BARU ============ --}}
+                    {{-- ============================================= --}}
+                    <div class="mb-4">
+                        <label for="jumlah" class="block text-sm font-medium text-gray-700">Jumlah Stok</label>
+                        <input type="number" name="jumlah" id="jumlah" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ old('jumlah', $produk->stok->jumlah ?? 0) }}" required>
+                    </div>
+                    {{-- ============================================= --}}
 
                     <div class="mb-4">
                         <label for="gambar" class="block text-sm font-medium text-gray-700">Ganti Gambar (Opsional)</label>
