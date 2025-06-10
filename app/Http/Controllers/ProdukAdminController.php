@@ -4,23 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Produk;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage; // Import Storage facade
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Arr;
 
 class ProdukAdminController extends Controller
 {
     /**
-     * Menampilkan daftar semua produk (Read).
+     * Menampilkan daftar semua produk.
      */
     public function index()
     {
-        // Gunakan with('stok') untuk memuat relasi stok
         $produks = Produk::with('stok')->latest()->paginate(10);
-
         return view('admin.produk.index', compact('produks'));
     }
 
     /**
-     * Menampilkan form untuk membuat produk baru (Create form).
+     * Menampilkan form untuk membuat produk baru.
      */
     public function create()
     {
@@ -28,18 +27,19 @@ class ProdukAdminController extends Controller
     }
 
     /**
-     * Menyimpan produk baru ke database (Store).
+     * [FIXED] Menyimpan produk baru ke database.
      */
     public function store(Request $request)
     {
-        // 1. Validasi Input
+        // 1. Validasi Input (termasuk 'jumlah' untuk stok)
         $validatedData = $request->validate([
             'nama_produk' => 'required|string|max:100',
             'kategori' => 'required|string|max:50',
             'ukuran' => 'required|in:petite,small,medium,large,extra large,custom',
             'harga' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi gambar
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'jumlah' => 'required|integer|min:0',
         ]);
 
         // 2. Handle Upload Gambar
@@ -48,15 +48,23 @@ class ProdukAdminController extends Controller
             $validatedData['gambar'] = $path;
         }
 
-        // 3. Simpan ke Database
-        Produk::create($validatedData);
+        // 3. Pisahkan data produk, lalu simpan produk
+        $produkData = Arr::except($validatedData, ['jumlah']);
+        $produk = Produk::create($produkData);
 
-        // 4. Redirect dengan pesan sukses
+        // 4. Buat data stok yang berelasi dengan produk baru
+        $produk->stok()->create([
+            'jumlah' => $validatedData['jumlah'],
+            'status_stok' => 'tersedia',
+            'tanggal_cek' => now(),
+        ]);
+
+        // 5. Redirect dengan pesan sukses
         return redirect()->route('produk.index')->with('success', 'Produk berhasil ditambahkan!');
     }
 
     /**
-     * Menampilkan form untuk mengedit produk (Edit form).
+     * Menampilkan form untuk mengedit produk.
      */
     public function edit(Produk $produk)
     {
@@ -64,10 +72,11 @@ class ProdukAdminController extends Controller
     }
 
     /**
-     * Memperbarui data produk di database (Update).
+     * [FIXED] Memperbarui data produk di database.
      */
     public function update(Request $request, Produk $produk)
     {
+        // 1. Validasi Input
         $validatedData = $request->validate([
             'nama_produk' => 'required|string|max:100',
             'kategori' => 'required|string|max:50',
@@ -75,25 +84,37 @@ class ProdukAdminController extends Controller
             'harga' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'jumlah' => 'required|integer|min:0',
         ]);
 
+        // 2. Handle Upload Gambar
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
             if ($produk->gambar) {
                 Storage::disk('public')->delete($produk->gambar);
             }
-            // Simpan gambar baru
             $path = $request->file('gambar')->store('produk', 'public');
             $validatedData['gambar'] = $path;
         }
 
-        $produk->update($validatedData);
+        // 3. Update data di tabel 'produk'
+        $produk->update(Arr::except($validatedData, ['jumlah']));
 
+        // 4. Update atau Buat data di tabel 'stok'
+        $produk->stok()->updateOrCreate(
+            ['id_produk' => $produk->id],
+            [
+                'jumlah' => $validatedData['jumlah'],
+                'status_stok' => 'tersedia',
+                'tanggal_cek' => now(),
+            ]
+        );
+
+        // 5. Redirect dengan pesan sukses
         return redirect()->route('produk.index')->with('success', 'Produk berhasil diperbarui!');
     }
 
     /**
-     * Menghapus produk dari database (Delete).
+     * [IMPROVED] Menghapus produk dari database.
      */
     public function destroy(Produk $produk)
     {
@@ -101,7 +122,11 @@ class ProdukAdminController extends Controller
         if ($produk->gambar) {
             Storage::disk('public')->delete($produk->gambar);
         }
-
+        
+        // Hapus data stok yang berelasi terlebih dahulu
+        $produk->stok()->delete();
+        
+        // Hapus data produk
         $produk->delete();
 
         return redirect()->route('produk.index')->with('success', 'Produk berhasil dihapus!');
