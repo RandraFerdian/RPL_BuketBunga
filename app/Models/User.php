@@ -6,29 +6,32 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Transaksi;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Atribut yang boleh diisi secara massal (mass assignable).
+     * Ini adalah "daftar putih" kolom yang aman untuk diisi saat membuat atau mengupdate user.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
         'name',
         'username',
         'email',
         'password',
-        'role', // Tambahkan atribut 'role' jika diperlukan
+        'role', // Penting untuk membedakan admin dan pelanggan
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Atribut yang harus disembunyikan saat diubah menjadi array atau JSON.
+     * Ini untuk keamanan agar password tidak pernah bocor.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -36,7 +39,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Atribut yang harus di-cast ke tipe data tertentu.
      *
      * @return array<string, string>
      */
@@ -44,7 +47,17 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password' => 'hashed', // Otomatis mengenkripsi password saat disimpan
         ];
+    }
+
+    /**
+     * Mendefinisikan relasi ke model Transaksi.
+     * Nama method ini ("transaksi") adalah yang kita panggil di controller.
+     * Relasi: Satu User bisa memiliki banyak Transaksi (One to Many).
+     */
+    public function transaksi(): HasMany
+    {
+        return $this->hasMany(Transaksi::class, 'id_user');
     }
 }

@@ -52,7 +52,7 @@ return new class extends Migration
             $table->foreignId('id_user')->nullable()->constrained('users')->onDelete('set null'); // ID Pelanggan
             $table->date('tanggal_transaksi'); // Tanggal Transaksi
             $table->integer('total_harga'); // Total Harga
-            $table->enum('metode_pembayaran', ['tunai', 'transfer']); // Metode Pembayaran
+            $table->enum('metode_pembayaran', ['online', 'cod']); // Metode Pembayaran
             $table->enum('status_pembayaran', ['belum lunas', 'lunas']); // Status Pembayaran
             $table->enum('status_konfirmasi', ['menunggu', 'diproses', 'selesai'])->default('menunggu'); // Status Konfirmasi
             $table->timestamps();

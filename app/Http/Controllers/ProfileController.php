@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User; // <-- TAMBAHKAN INI
+use Illuminate\Validation\Rule; // <-- TAMBAHKAN INI
 
 class ProfileController extends Controller
 {
@@ -26,13 +28,26 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        // Ganti method update yang lama dengan yang ini
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Validasi data input, termasuk username
+        $validatedData = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:50', Rule::unique(User::class)->ignore($user->id)],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+        ]);
+
+        // Mengisi data yang divalidasi ke model user
+        $user->fill($validatedData);
+
+        // Jika email diubah, reset status verifikasi email
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        // Simpan perubahan
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

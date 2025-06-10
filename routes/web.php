@@ -1,56 +1,97 @@
 <?php
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KatalogController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ProdukAdminController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\PesananAdminController;
-use App\Http\Controllers\CartController;
 
-// Rute untuk Landing Page (welcome.blade.php)
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\KatalogController;
+use App\Http\Controllers\PesananAdminController;
+use App\Http\Controllers\ProdukAdminController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OrderHistoryController;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Di sini kita mendaftarkan semua rute untuk aplikasi web kita.
+|
+*/
+
+
+//======================================================================
+// RUTE PUBLIK
+// Semua orang bisa mengakses ini tanpa perlu login.
+//======================================================================
+
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-// Rute untuk Halaman Katalog (katalog.blade.php)
 Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog.index');
 
-// Rute untuk Halaman Detail Produk (Wajib Login)
-Route::get('/katalog/{id}', [KatalogController::class, 'show'])->name('katalog.show')->middleware('auth');
 
-// Rute untuk dashboard pengguna biasa (dibuat oleh Breeze)
-Route::get('/dashboard', function () {
-    return redirect()->route('katalog.index');
-})->middleware(['auth'])->name('dashboard');
+//======================================================================
+// RUTE KERANJANG BELANJA
+// Fungsionalitas menambah, melihat, dan mengubah isi keranjang.
+//======================================================================
 
-// Rute untuk profil pengguna (dibuat oleh Breeze)
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    // Rute untuk proses Checkout
-    Route::post('/checkout', [CheckoutController::class, 'showCheckoutPage'])->name('checkout.show');
-    Route::post('/checkout/process', [CheckoutController::class, 'processOrder'])->name('checkout.process');
-    Route::get('/order/{transaksi}/confirmation', [CheckoutController::class, 'showConfirmationPage'])->name('order.confirmation');
-});
-
-// Rute untuk grup admin yang dilindungi
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::resource('/admin/produk', ProdukAdminController::class);
-
-    // Rute untuk Manajemen Pesanan
-    Route::get('/admin/pesanan', [PesananAdminController::class, 'index'])->name('pesanan.index');
-    Route::get('/admin/pesanan/{transaksi}', [PesananAdminController::class, 'show'])->name('pesanan.show');
-    Route::put('/admin/pesanan/{transaksi}', [PesananAdminController::class, 'update'])->name('pesanan.update');
-});
-
-// Rute untuk halaman checkout
 Route::get('/keranjang', [CartController::class, 'index'])->name('cart.index');
 Route::post('/keranjang/tambah', [CartController::class, 'add'])->name('cart.add');
 Route::patch('/keranjang/update/{productId}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/keranjang/hapus', [CartController::class, 'remove'])->name('cart.remove');
 
-// Rute untuk autentikasi (login, register, dll)
+
+//======================================================================
+// RUTE UNTUK PENGGUNA TERAUTENTIKASI (WAJIB LOGIN)
+//======================================================================
+
+Route::middleware('auth')->group(function () {
+    // Halaman detail produk
+    Route::get('/katalog/{produk}', [KatalogController::class, 'show'])->name('katalog.show');
+
+    // Halaman profil pengguna
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Alur proses checkout
+    Route::get('/checkout', [CheckoutController::class, 'showCheckoutPage'])->name('checkout.show');
+    Route::post('/checkout/now', [CheckoutController::class, 'showCheckoutNowPage'])->name('checkout.now');
+    Route::post('/checkout/process', [CheckoutController::class, 'processOrder'])->name('checkout.process');
+    Route::get('/order/{transaksi}/confirmation', [CheckoutController::class, 'showConfirmationPage'])->name('order.confirmation');
+    Route::get('/order/{transaksi}/cod-confirmation', [CheckoutController::class, 'showCodConfirmationPage'])->name('order.cod_confirmation');
+
+    Route::get('/riwayat-pesanan', [OrderHistoryController::class, 'index'])->name('order.history');
+    Route::get('/riwayat-pesanan/{transaksi}', [OrderHistoryController::class, 'show'])->name('order.show');
+
+    // Rute dashboard pengguna biasa yang dialihkan
+    Route::get('/dashboard', function () {
+        return redirect()->route('katalog.index');
+    })->name('dashboard');
+});
+
+
+//======================================================================
+// RUTE KHUSUS ADMIN
+// Semua rute di dalam grup ini wajib login sebagai admin.
+//======================================================================
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    
+    // Rute Manajemen Produk (CRUD)
+    Route::resource('/admin/produk', ProdukAdminController::class)->names('produk');
+    
+    // Rute Manajemen Pesanan
+    Route::get('/admin/pesanan', [PesananAdminController::class, 'index'])->name('pesanan.index');
+    Route::get('/admin/pesanan/{transaksi}', [PesananAdminController::class, 'show'])->name('pesanan.show');
+    Route::put('/admin/pesanan/{transaksi}', [PesananAdminController::class, 'update'])->name('pesanan.update');
+});
+
+
+//======================================================================
+// File rute autentikasi dari Breeze (login, register, dll.)
+//======================================================================
 require __DIR__.'/auth.php';

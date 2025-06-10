@@ -13,16 +13,16 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="md:col-span-2">
-                    <h3 class="text-lg font-bold">Detail Produk</h3>
-                    <p class="text-sm text-gray-600 mb-4">Belum ada detail produk yang tersimpan.</p>
-                    {{-- Nanti kita tampilkan daftar produk di sini --}}
-
-                    <h3 class="text-lg font-bold mt-6">Detail Pelanggan</h3>
+                    <h3 class="text-lg font-bold">Detail Pelanggan</h3>
                     <p><strong>Nama:</strong> {{ $transaksi->user->name ?? 'Guest' }}</p>
                     <p><strong>Email:</strong> {{ $transaksi->user->email ?? '-' }}</p>
+
+                    <h3 class="text-lg font-bold mt-6">Detail Produk</h3>
+                    {{-- Logika untuk menampilkan detail produk akan kita tambahkan nanti --}}
+                    <p class="text-sm text-gray-600 mb-4">Belum ada detail produk yang tersimpan.</p>
                 </div>
 
-                <div>
+                <div class="bg-gray-50 p-6 rounded-lg">
                     <h3 class="text-lg font-bold">Status Pesanan</h3>
                     <form action="{{ route('pesanan.update', $transaksi->id) }}" method="POST">
                         @csrf
