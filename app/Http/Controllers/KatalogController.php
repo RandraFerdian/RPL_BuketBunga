@@ -30,19 +30,24 @@ class KatalogController extends Controller
 
     public function search(Request $request)
     {
-        // Ambil kata kunci dari input form dengan nama 'query'
+        // Langkah 1: Validasi input dari pengguna
+        $request->validate([
+            'query' => 'required|string|max:100',
+        ]);
+
+        // Langkah 2: Ambil kata kunci pencarian dari input bernama 'query'
         $query = $request->input('query');
 
-        // Cari produk di mana nama_produk mengandung kata kunci
+        // Langkah 3: Cari produk di database berdasarkan nama atau kategori
+        // Menggunakan paginate() agar halaman tidak berat jika hasil banyak
         $products = Produk::where('nama_produk', 'LIKE', "%{$query}%")
-                        ->orWhere('kategori', 'LIKE', "%{$query}%")
-                        ->paginate(12);
+                            ->orWhere('kategori', 'LIKE', "%{$query}%")
+                            ->latest()
+                            ->paginate(12);
 
-        // Tampilkan hasilnya menggunakan view yang sama dengan katalog
-        return view('katalog', [
-            'products' => $products,
-            'query' => $query // Kirim kata kunci untuk ditampilkan di view
-        ]);
+        // Langkah 4: Kembalikan ke view 'katalog' dengan membawa hasil produk
+        // dan kata kunci pencarian untuk ditampilkan di judul.
+        return view('katalog', compact('products', 'query'));
     }
     public function welcome()
     {
