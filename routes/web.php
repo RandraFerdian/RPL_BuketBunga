@@ -28,6 +28,7 @@ use App\Http\Controllers\OrderHistoryController;
 Route::get('/', [KatalogController::class, 'welcome'])->name('welcome');
 
 Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog.index');
+Route::get('/kategori/{kategori}', [KatalogController::class, 'showByCategory'])->name('katalog.kategori');
 
 
 //======================================================================

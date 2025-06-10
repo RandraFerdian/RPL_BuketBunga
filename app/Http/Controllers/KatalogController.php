@@ -12,8 +12,11 @@ class KatalogController extends Controller
      */
     public function index()
     {
-        $products = Produk::latest()->paginate(12);
-        return view('katalog', ['products' => $products]);
+        // Ambil semua produk dan langsung kelompokkan berdasarkan kolom 'kategori'.
+        $groupedProducts = \App\Models\Produk::latest()->get()->groupBy('kategori');
+    
+        // Kirim data yang sudah dikelompokkan ke view.
+        return view('katalog', compact('groupedProducts'));
     }
 
     /**
