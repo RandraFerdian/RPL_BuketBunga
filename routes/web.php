@@ -25,9 +25,7 @@ use App\Http\Controllers\OrderHistoryController;
 // Semua orang bisa mengakses ini tanpa perlu login.
 //======================================================================
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::get('/', [KatalogController::class, 'welcome'])->name('welcome');
 
 Route::get('/katalog', [KatalogController::class, 'index'])->name('katalog.index');
 

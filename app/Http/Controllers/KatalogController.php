@@ -41,4 +41,12 @@ class KatalogController extends Controller
             'query' => $query // Kirim kata kunci untuk ditampilkan di view
         ]);
     }
+    public function welcome()
+    {
+        // Ambil 4 produk secara acak yang memiliki gambar untuk ditampilkan
+        $produks = Produk::whereNotNull('gambar')->inRandomOrder()->take(4)->get();
+
+        // Kirim data produk ke view 'welcome'
+        return view('welcome', compact('produks'));
+    }
 }

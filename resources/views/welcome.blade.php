@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,10 +13,16 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        .font-playfair { font-family: 'Playfair Display', serif; }
-        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
+        }
     </style>
 </head>
+
 <body class="font-poppins bg-gray-50 text-gray-800">
 
     <nav class="bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
@@ -27,21 +34,21 @@
                 <a href="{{ route('katalog.index') }}" class="px-5 py-2 bg-pink-500 text-white rounded-full text-sm font-semibold hover:bg-pink-600 transition-colors">Katalog</a>
                 <div>
                     @auth
-                        {{-- Jika pengguna sudah login, tampilkan tombol Logout --}}
-                        {{-- Logout harus menggunakan form dengan method POST untuk keamanan --}}
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <a href="{{ route('logout') }}"
+                    {{-- Jika pengguna sudah login, tampilkan tombol Logout --}}
+                    {{-- Logout harus menggunakan form dengan method POST untuk keamanan --}}
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <a href="{{ route('logout') }}"
                             onclick="event.preventDefault(); this.closest('form').submit();"
                             class="px-5 py-2 border border-white rounded-full text-sm font-semibold hover:bg-white hover:text-gray-800 transition-colors">
-                                Logout
-                            </a>
-                        </form>
-                    @else
-                        {{-- Jika belum login, tampilkan tombol Login --}}
-                        <a href="{{ route('login') }}" class="px-5 py-2 border border-white rounded-full text-sm font-semibold hover:bg-white hover:text-gray-800 transition-colors">
-                            Login
+                            Logout
                         </a>
+                    </form>
+                    @else
+                    {{-- Jika belum login, tampilkan tombol Login --}}
+                    <a href="{{ route('login') }}" class="px-5 py-2 border border-white rounded-full text-sm font-semibold hover:bg-white hover:text-gray-800 transition-colors">
+                        Login
+                    </a>
                     @endauth
                 </div>
             </div>
@@ -68,21 +75,27 @@
                     <div class="flex flex-col items-center">
                         <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center">
                             {{-- Ganti dengan Ikon SVG --}}
-                            <svg class="w-10 h-10 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                            <svg class="w-10 h-10 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                            </svg>
                         </div>
                         <h3 class="mt-6 text-xl font-bold">Desain Kreatif</h3>
                         <p class="mt-2 text-gray-600">Setiap buket dirangkai dengan sentuhan personal dan kreativitas tanpa batas.</p>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center">
-                            <svg class="w-10 h-10 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <svg class="w-10 h-10 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                         </div>
                         <h3 class="mt-6 text-xl font-bold">Proses Cepat</h3>
                         <p class="mt-2 text-gray-600">Pemesanan mudah dan proses pengerjaan yang cepat untuk memenuhi kebutuhan Anda.</p>
                     </div>
                     <div class="flex flex-col items-center">
                         <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center">
-                           <svg class="w-10 h-10 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <svg class="w-10 h-10 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                         </div>
                         <h3 class="mt-6 text-xl font-bold">Kualitas Terjamin</h3>
                         <p class="mt-2 text-gray-600">Kami hanya menggunakan bunga dan material pilihan dengan kualitas terbaik.</p>
@@ -95,26 +108,62 @@
             <div class="container mx-auto px-6 text-center">
                 <h2 class="text-4xl font-playfair font-bold">Koleksi Terfavorit</h2>
                 <p class="mt-2 text-gray-600">Beberapa pilihan yang paling dicintai pelanggan kami.</p>
-                <div class="mt-12 grid md:grid-cols-4 gap-8">
-                    {{-- Ganti dengan gambar produk Anda --}}
-                    <img src="https://images.unsplash.com/photo-1579622539180-37e253164757?q=80&w=1887&auto=format&fit=crop" class="rounded-lg shadow-lg aspect-square object-cover" alt="Produk 1">
-                    <img src="https://images.unsplash.com/photo-1546842931-886c185b4c8c?q=80&w=1887&auto=format&fit=crop" class="rounded-lg shadow-lg aspect-square object-cover" alt="Produk 2">
-                    <img src="https://images.unsplash.com/photo-1457082333399-901763691316?q=80&w=1887&auto=format&fit=crop" class="rounded-lg shadow-lg aspect-square object-cover" alt="Produk 3">
-                    <img src="https://images.unsplash.com/photo-1533616688484-95c615593031?q=80&w=1887&auto=format&fit=crop" class="rounded-lg shadow-lg aspect-square object-cover" alt="Produk 4">
+
+                {{-- Grid untuk menampilkan produk --}}
+                <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+                    {{-- Loop untuk setiap produk yang dikirim dari controller --}}
+                    @forelse ($produks as $produk)
+                    {{-- Setiap produk dibungkus dengan link ke halaman detailnya --}}
+                    <a href="{{ route('katalog.show', $produk) }}" class="group block bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden text-left">
+                        <div class="overflow-hidden h-64">
+                            {{-- Menampilkan gambar produk dari storage Anda --}}
+                            <img src="{{ asset('storage/' . $produk->gambar) }}" alt="{{ $produk->nama_produk }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                        </div>
+                        <div class="p-5">
+                            {{-- Menampilkan nama produk --}}
+                            <h3 class="font-semibold text-lg text-gray-800 truncate" title="{{ $produk->nama_produk }}">{{ $produk->nama_produk }}</h3>
+                            {{-- Menampilkan harga --}}
+                            <p class="text-pink-500 font-bold mt-2">Rp{{ number_format($produk->harga) }}</p>
+                        </div>
+                    </a>
+                    @empty
+                    {{-- Ini akan tampil jika tidak ada produk sama sekali di database --}}
+                    <div class="lg:col-span-4 text-center text-gray-500">
+                        <p>Belum ada produk favorit untuk ditampilkan.</p>
+                    </div>
+                    @endforelse
+
+                </div>
+
+                {{-- Tombol untuk melihat semua produk --}}
+                <div class="mt-16">
+                    <a href="{{ route('katalog.index') }}" class="px-8 py-3 border border-gray-800 text-gray-800 font-bold rounded-full text-base hover:bg-gray-800 hover:text-white transition-colors">
+                        Lihat Semua Produk
+                    </a>
                 </div>
             </div>
         </section>
-
         <section id="tentang" class="py-20 bg-pink-50">
             <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+
+                {{-- BAGIAN GAMBAR YANG DIPERBAIKI --}}
                 <div>
-                    <img src="https://images.unsplash.com/photo-1567649875932-a1b2fe214555?q=80&w=1887&auto=format&fit=crop" class="rounded-lg shadow-xl" alt="Tentang Kami">
+                    <img src="{{ asset('images/tentang-kami.png') }}" class="rounded-lg shadow-xl" alt="Tentang Daara Bouquet">
                 </div>
+
+                {{-- BAGIAN TEKS DAN TOMBOL --}}
                 <div>
                     <h2 class="text-4xl font-playfair font-bold">Cerita di Balik Daara Bouquet</h2>
-                    <p class="mt-4 text-gray-600 leading-relaxed">Daara Bouquet lahir dari kecintaan kami terhadap keindahan dan seni merangkai bunga. Kami percaya bahwa setiap tangkai bunga memiliki cerita dan setiap buket adalah pesan yang tulus. Misi kami adalah membantu Anda menyampaikan pesan cinta, terima kasih, dan kebahagiaan melalui rangkaian bunga yang kami buat dengan sepenuh hati.</p>
-                    <a href="{{ route('katalog.index') }}" class="mt-6 inline-block text-pink-500 font-semibold hover:underline">Lihat Semua Cerita &rarr;</a>
+                    <p class="mt-4 text-gray-600 leading-relaxed">
+                        Daara Bouquet lahir dari kecintaan kami terhadap keindahan dan seni merangkai bunga. Kami percaya bahwa setiap tangkai bunga memiliki cerita dan setiap buket adalah pesan yang tulus. Misi kami adalah membantu Anda menyampaikan pesan cinta, terima kasih, dan kebahagiaan melalui rangkaian bunga yang kami buat dengan sepenuh hati.
+                    </p>
+                    {{-- TOMBOL INI SUDAH BENAR, MENGARAH KE HALAMAN KATALOG --}}
+                    <a href="{{ route('katalog.index') }}" class="mt-6 inline-block text-pink-500 font-semibold hover:underline">
+                        Lihat Semua Cerita &rarr;
+                    </a>
                 </div>
+
             </div>
         </section>
 
@@ -129,7 +178,7 @@
         </section>
 
     </main>
-    
+
     <footer class="bg-gray-800 text-white">
         <div class="container mx-auto px-6 py-8 text-center">
             <p>&copy; {{ date('Y') }} Daara Bouquet. Semua Hak Cipta Dilindungi.</p>
@@ -138,4 +187,5 @@
     </footer>
 
 </body>
+
 </html>
