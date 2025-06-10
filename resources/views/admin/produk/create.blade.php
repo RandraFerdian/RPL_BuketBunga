@@ -15,7 +15,7 @@
             <div class="p-6 bg-white border-b border-gray-200">
                 
                 {{-- Form untuk menambah produk --}}
-                <form method="POST" action="{{ route('produk.store') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('admin.produk.store') }}" enctype="multipart/form-data">
                     @csrf  {{-- Token Keamanan Wajib --}}
 
                     <div class="mb-4">

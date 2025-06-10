@@ -6,7 +6,7 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Manajemen Produk
         </h2>
-        <a href="{{ route('produk.create') }}" class="px-5 py-2 bg-blue-500 text-white rounded-md font-semibold hover:bg-blue-600">
+        <a href="{{ route('admin.produk.create') }}" class="px-5 py-2 bg-blue-500 text-white rounded-md font-semibold hover:bg-blue-600">
             + Tambah Produk
         </a>
     </div>
@@ -41,8 +41,8 @@
                                 <td class="px-6 py-4 whitespace-nowrap">Rp{{ number_format($produk->harga) }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $produk->stok->jumlah ?? 'Data Stok Kosong' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('produk.edit', $produk->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                    <form action="{{ route('produk.destroy', $produk->id) }}" method="POST" class="inline-block ml-4">
+                                    <a href="{{ route('admin.produk.edit', $produk->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                    <form action="{{ route('admin.produk.destroy', $produk->id) }}" method="POST" class="inline-block ml-4">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">Hapus</button>

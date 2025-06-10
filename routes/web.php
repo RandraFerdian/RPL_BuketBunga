@@ -17,28 +17,34 @@ use App\Http\Controllers\ProfileController;
 */
 
 //======================================================================
-// RUTE PUBLIK
+// RUTE PUBLIK (Dapat diakses semua orang)
 //======================================================================
 
-// Mengelompokkan rute yang menggunakan KatalogController
 Route::controller(KatalogController::class)->group(function () {
     Route::get('/', 'welcome')->name('welcome');
     Route::get('/katalog', 'index')->name('katalog.index');
-    Route::get('/katalog/search', 'search')->name('produk.search');
+    Route::get('/katalog/search', 'search')->name('katalog.search');
     Route::get('/kategori/{kategori}', 'showByCategory')->name('katalog.kategori');
 });
 
-// Mengelompokkan rute yang menggunakan CartController
-Route::controller(CartController::class)->name('cart.')->group(function () {
-    Route::get('/keranjang', 'index')->name('index');
-    Route::post('/keranjang/tambah', 'add')->name('add');
-    Route::patch('/keranjang/update/{productId}', 'update')->name('update');
-    Route::delete('/keranjang/hapus', 'remove')->name('remove');
+Route::controller(CartController::class)->name('cart.')->prefix('keranjang')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/tambah', 'add')->name('add');
+    Route::patch('/update/{rowId}', 'update')->name('update');
+    Route::delete('/hapus/{rowId}', 'remove')->name('remove');
+});
+
+// --- Grup Checkout & Riwayat Pesanan ---
+Route::controller(CheckoutController::class)->group(function () {
+    Route::get('/checkout', 'showCheckoutPage')->name('checkout.show');
+    Route::post('/checkout/now', 'showCheckoutNowPage')->name('checkout.now'); // <-- TAMBAHKAN KEMBALI BARIS INI
+    Route::post('/checkout/process', 'processOrder')->name('checkout.process');
+    Route::get('/order/{transaksi}/confirmation', 'showConfirmationPage')->name('order.confirmation');
 });
 
 
 //======================================================================
-// RUTE UNTUK PENGGUNA TERAUTENTIKASI (WAJIB LOGIN)
+// RUTE UNTUK PENGGUNA TERAUTENTIKASI (Wajib Login)
 //======================================================================
 
 Route::middleware('auth')->group(function () {
@@ -52,15 +58,13 @@ Route::middleware('auth')->group(function () {
     });
 
     // --- Grup Checkout & Riwayat Pesanan ---
-    Route::controller(CheckoutController::class)->group(function() {
+    Route::controller(CheckoutController::class)->group(function () {
         Route::get('/checkout', 'showCheckoutPage')->name('checkout.show');
-        Route::post('/checkout/now', 'showCheckoutNowPage')->name('checkout.now');
         Route::post('/checkout/process', 'processOrder')->name('checkout.process');
         Route::get('/order/{transaksi}/confirmation', 'showConfirmationPage')->name('order.confirmation');
-        Route::get('/order/{transaksi}/cod-confirmation', 'showCodConfirmationPage')->name('order.cod_confirmation');
     });
-    
-    Route::controller(OrderHistoryController::class)->prefix('riwayat-pesanan')->name('order.')->group(function() {
+
+    Route::controller(OrderHistoryController::class)->prefix('riwayat-pesanan')->name('order.')->group(function () {
         Route::get('/', 'index')->name('history');
         Route::get('/{transaksi}', 'show')->name('show');
     });
@@ -71,25 +75,21 @@ Route::middleware('auth')->group(function () {
 
 
 //======================================================================
-// RUTE KHUSUS ADMIN (WAJIB LOGIN SEBAGAI ADMIN)
+// RUTE KHUSUS ADMIN (Wajib Login sebagai Admin)
 //======================================================================
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    
-    // Resource untuk Produk, otomatis memberi nama 'admin.produk.index', 'admin.produk.create', dst.
-    Route::resource('/produk', ProdukAdminController::class)->names('produk');
-    
-    // Rute Manajemen Pesanan
-    Route::controller(PesananAdminController::class)->prefix('pesanan')->name('pesanan.')->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/{transaksi}', 'show')->name('show');
-        Route::put('/{transaksi}', 'update')->name('update');
-    });
+
+    // Otomatis memberi nama: admin.produk.index, admin.produk.create, dst.
+    Route::resource('produk', ProdukAdminController::class);
+
+    // Otomatis memberi nama: admin.pesanan.index, admin.pesanan.show, dst.
+    Route::resource('pesanan', PesananAdminController::class)->except(['create', 'store', 'edit']);
 });
 
 
 //======================================================================
 // FILE RUTE AUTENTIKASI DARI BREEZE
 //======================================================================
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
