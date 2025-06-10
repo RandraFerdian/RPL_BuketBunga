@@ -16,14 +16,47 @@
                 
                 <form method="POST" action="{{ route('produk.update', $produk->id) }}" enctype="multipart/form-data">
                     @csrf
-                    @method('PUT') {{-- Method untuk update --}}
+                    @method('PUT')
 
                     <div class="mb-4">
                         <label for="nama_produk" class="block text-sm font-medium text-gray-700">Nama Produk</label>
-                        <input type="text" name="nama_produk" id="nama_produk" class="mt-1 block w-full rounded-md" value="{{ old('nama_produk', $produk->nama_produk) }}" required>
+                        <input type="text" name="nama_produk" id="nama_produk" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ old('nama_produk', $produk->nama_produk) }}" required>
                     </div>
-                    
-                    {{-- Tambahkan field lain (kategori, ukuran, harga, deskripsi) dengan cara yang sama, menggunakan value="..." --}}
+
+                    {{-- =================================================== --}}
+                    {{-- ============ BAGIAN YANG DITAMBAHKAN ============ --}}
+                    {{-- =================================================== --}}
+
+                    <div class="mb-4">
+                        <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
+                        <input type="text" name="kategori" id="kategori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ old('kategori', $produk->kategori) }}" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="ukuran" class="block text-sm font-medium text-gray-700">Ukuran</label>
+                        <select name="ukuran" id="ukuran" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                            <option value="petite" {{ old('ukuran', $produk->ukuran) == 'petite' ? 'selected' : '' }}>Petite</option>
+                            <option value="small" {{ old('ukuran', $produk->ukuran) == 'small' ? 'selected' : '' }}>Small</option>
+                            <option value="medium" {{ old('ukuran', $produk->ukuran) == 'medium' ? 'selected' : '' }}>Medium</option>
+                            <option value="large" {{ old('ukuran', $produk->ukuran) == 'large' ? 'selected' : '' }}>Large</option>
+                            <option value="extra large" {{ old('ukuran', $produk->ukuran) == 'extra large' ? 'selected' : '' }}>Extra Large</option>
+                            <option value="custom" {{ old('ukuran', $produk->ukuran) == 'custom' ? 'selected' : '' }}>Custom</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="harga" class="block text-sm font-medium text-gray-700">Harga (Rp)</label>
+                        <input type="number" name="harga" id="harga" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ old('harga', $produk->harga) }}" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                        <textarea name="deskripsi" id="deskripsi" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">{{ old('deskripsi', $produk->deskripsi) }}</textarea>
+                    </div>
+
+                    {{-- =================================================== --}}
+                    {{-- ============ AKHIR BAGIAN TAMBAHAN ============ --}}
+                    {{-- =================================================== --}}
 
                     <div class="mb-4">
                         <label for="gambar" class="block text-sm font-medium text-gray-700">Ganti Gambar (Opsional)</label>

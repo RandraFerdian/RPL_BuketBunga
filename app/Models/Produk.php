@@ -19,4 +19,10 @@ class Produk extends Model // <-- PASTIKAN NAMA CLASS-NYA BENAR
         'deskripsi',
         'gambar',
     ];
+
+     public function stok()
+    {
+        // Parameter kedua ('id_produk') adalah foreign key di tabel 'stok'
+        return $this->hasOne(Stok::class, 'id_produk');
+    }
 }

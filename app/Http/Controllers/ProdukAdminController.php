@@ -13,7 +13,9 @@ class ProdukAdminController extends Controller
      */
     public function index()
     {
-        $produks = Produk::latest()->paginate(10);
+        // Gunakan with('stok') untuk memuat relasi stok
+        $produks = Produk::with('stok')->latest()->paginate(10);
+
         return view('admin.produk.index', compact('produks'));
     }
 

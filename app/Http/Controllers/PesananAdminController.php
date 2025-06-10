@@ -10,8 +10,10 @@ class PesananAdminController extends Controller
     // Menampilkan daftar semua pesanan
     public function index()
     {
-        $transaksi = Transaksi::with('user')->latest()->paginate(15);
-        return view('admin.pesanan.index', compact('transaksi'));
+        // Ganti nama variabel dari $transaksi menjadi $pesanans
+        $pesanans = Transaksi::with('user')->latest()->paginate(15);
+        // Kirim 'pesanans' ke view
+        return view('admin.pesanan.index', compact('pesanans'));
     }
 
     // Menampilkan detail satu pesanan
