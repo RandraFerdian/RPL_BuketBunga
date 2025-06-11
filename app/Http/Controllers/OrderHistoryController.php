@@ -2,37 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Transaksi;
-use Illuminate\View\View;
 
 class OrderHistoryController extends Controller
 {
     /**
-     * Menampilkan halaman riwayat pesanan untuk pengguna yang sedang login.
+     * Menampilkan daftar riwayat pesanan milik pengguna yang sedang login.
      */
-    public function index(): View
+    public function index()
     {
-        // Ambil semua transaksi milik user yang sedang login, urutkan dari yang terbaru
-        // dan muat relasi 'detailTransaksi' untuk efisiensi
-        $orders = Auth::user()->transaksi()->with('detailTransaksi')->latest()->paginate(10);
+        // Ambil transaksi hanya untuk user yang sedang login
+        $transaksis = Transaksi::where('id_user', Auth::id())
+                                ->latest() // Urutkan dari yang terbaru
+                                ->paginate(10); // Gunakan pagination
 
-        return view('riwayat-pesanan.index', compact('orders'));
+        return view('riwayat-pesanan.index', compact('transaksis'));
     }
 
     /**
-     * Menampilkan halaman detail satu pesanan.
+     * Menampilkan detail satu pesanan dari riwayat.
      */
-    public function show(Transaksi $transaksi) : View
+    public function show(Transaksi $transaksi)
     {
-        // Pengecekan keamanan: pastikan pengguna hanya bisa melihat pesanannya sendiri.
+        // Pastikan user hanya bisa melihat detail transaksinya sendiri
         if ($transaksi->id_user !== Auth::id()) {
             abort(403, 'AKSES DITOLAK');
         }
 
-        // Muat relasi detail transaksi beserta info produknya untuk ditampilkan
-        $transaksi->load('detailTransaksi.produk');
+        // Load relasi produk untuk ditampilkan di detail
+        $transaksi->load('produks');
 
         return view('riwayat-pesanan.show', compact('transaksi'));
     }
