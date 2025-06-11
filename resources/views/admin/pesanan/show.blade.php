@@ -12,6 +12,15 @@
 <div class="py-12">
     <div class="container mx-auto px-6">
         
+        {{-- Tombol Kembali (diambil dari branch 'main' dan diletakkan di atas) --}}
+        <div class="mb-6">
+            <a href="{{ route('admin.pesanan.index') }}" class="text-sm text-gray-600 hover:text-pink-500 inline-flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Kembali ke Daftar Pesanan
+            </a>
+        </div>
+
+        {{-- Notifikasi Sukses --}}
         @if (session('success'))
             <div class="mb-6 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-md" role="alert">
                 <p class="font-bold">{{ session('success') }}</p>
@@ -60,15 +69,14 @@
 
             {{-- Kolom Kanan - Status & Aksi --}}
             <div class="bg-gray-50 p-6 rounded-lg self-start space-y-6">
-                {{-- Form untuk Status Pesanan --}}
                 <div>
-                    <h3 class="text-lg font-bold mb-4">Status Pesanan</h3>
+                    <h3 class="text-lg font-bold mb-4">Update Status Pesanan</h3>
                     <form action="{{ route('admin.pesanan.update', $transaksi->id) }}" method="POST">
                         @csrf
                         @method('PUT')
                         <div>
                             <label for="status_konfirmasi" class="block text-sm font-medium text-gray-700">Ubah Status</label>
-                            <select id="status_konfirmasi" name="status_konfirmasi" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <select name="status_konfirmasi" id="status_konfirmasi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                                 <option value="menunggu" @if($transaksi->status_konfirmasi == 'menunggu') selected @endif>Menunggu</option>
                                 <option value="diproses" @if($transaksi->status_konfirmasi == 'diproses') selected @endif>Diproses</option>
                                 <option value="selesai" @if($transaksi->status_konfirmasi == 'selesai') selected @endif>Selesai</option>
@@ -79,27 +87,21 @@
                     </form>
                 </div>
 
-                {{-- =============================================== --}}
-                {{-- ==== KODE TAMBAHAN UNTUK STATUS PEMBAYARAN ==== --}}
-                {{-- =============================================== --}}
                 <div class="border-t border-gray-200"></div>
+
                 <div>
-                    <h3 class="text-lg font-bold mb-4">Status Pembayaran</h3>
+                    <h3 class="text-lg font-bold mb-4">Update Status Pembayaran</h3>
                     <form action="{{ route('admin.pesanan.updatePayment', $transaksi->id) }}" method="POST">
                         @csrf
                         @method('PATCH')
                         <label for="status_pembayaran" class="block text-sm font-medium text-gray-700">Ubah Status</label>
-                        <select name="status_pembayaran" id="status_pembayaran" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
+                        <select name="status_pembayaran" id="status_pembayaran" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                             <option value="belum lunas" {{ $transaksi->status_pembayaran == 'belum lunas' ? 'selected' : '' }}>Belum Lunas</option>
                             <option value="lunas" {{ $transaksi->status_pembayaran == 'lunas' ? 'selected' : '' }}>Lunas</option>
                         </select>
-                        <button type="submit" class="mt-4 w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">
-                            Update Pembayaran
-                        </button>
+                        <button type="submit" class="mt-4 w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">Update Pembayaran</button>
                     </form>
                 </div>
-                
-                <a href="{{ route('admin.pesanan.index') }}" class="inline-block pt-4 text-indigo-600 hover:text-indigo-900">&larr; Kembali ke Daftar Pesanan</a>
             </div>
         </div>
     </div>

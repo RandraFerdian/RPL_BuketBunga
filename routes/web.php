@@ -31,9 +31,8 @@ Route::controller(CartController::class)->name('cart.')->prefix('keranjang')->gr
     Route::get('/', 'index')->name('index');
     Route::post('/tambah', 'add')->name('add');
     Route::patch('/update/{rowId}', 'update')->name('update');
-    Route::delete('/hapus/{rowId}', 'remove')->name('remove');
+    Route::delete('/hapus/{id}', 'remove')->name('remove');
 });
-
 
 //======================================================================
 // RUTE UNTUK PENGGUNA TERAUTENTIKASI (Wajib Login)
@@ -49,7 +48,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/', 'destroy')->name('destroy');
     });
 
-    // --- Grup Checkout & Konfirmasi (SUDAH DIPERBAIKI & DIGABUNG) ---
+    // --- Grup Checkout, Konfirmasi & Riwayat ---
     Route::controller(CheckoutController::class)->group(function () {
         Route::get('/checkout', 'showCheckoutPage')->name('checkout.show');
         Route::post('/checkout/now', 'showCheckoutNowPage')->name('checkout.now');
@@ -58,7 +57,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/order/{transaksi}/cod-confirmation', 'showCodConfirmationPage')->name('order.cod_confirmation');
     });
 
-    // --- Grup Riwayat Pesanan ---
     Route::controller(OrderHistoryController::class)->prefix('riwayat-pesanan')->name('order.')->group(function () {
         Route::get('/', 'index')->name('history');
         Route::get('/{transaksi}', 'show')->name('show');
@@ -67,7 +65,6 @@ Route::middleware('auth')->group(function () {
     // --- Pengalihan Dashboard Pengguna Biasa ---
     Route::get('/dashboard', fn() => redirect()->route('katalog.index'))->name('dashboard');
 });
-
 
 //======================================================================
 // RUTE KHUSUS ADMIN (Wajib Login sebagai Admin)
@@ -83,9 +80,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('pesanan', PesananAdminController::class)
         ->parameters(['pesanan' => 'transaksi'])
         ->except(['create', 'store', 'edit']);
+    
+    // Rute custom untuk update status pembayaran
     Route::patch('/pesanan/{transaksi}/update-payment', [PesananAdminController::class, 'updatePaymentStatus'])->name('pesanan.updatePayment');
 });
-
 
 //======================================================================
 // FILE RUTE AUTENTIKASI DARI BREEZE

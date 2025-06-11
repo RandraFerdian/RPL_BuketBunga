@@ -7,24 +7,31 @@ use Illuminate\Http\Request;
 
 class PesananAdminController extends Controller
 {
-    // Menampilkan daftar semua pesanan
+    /**
+     * Menampilkan daftar semua pesanan.
+     */
     public function index()
     {
-        // Ganti nama variabel dari $transaksi menjadi $pesanans
-        $pesanans = Transaksi::with('user')->latest()->paginate(15);
-        // Kirim 'pesanans' ke view
-        return view('admin.pesanan.index', compact('pesanans'));
+        // Menggunakan nama variabel jamak '$transaksis' untuk kumpulan data
+        $transaksis = Transaksi::with('user')->latest()->paginate(15);
+        return view('admin.pesanan.index', compact('transaksis'));
     }
 
-    // Menampilkan detail satu pesanan
+    /**
+     * Menampilkan detail satu pesanan.
+     * Menggunakan $transaksi agar sesuai dengan route model binding.
+     * Memuat relasi 'produks' yang sudah kita definisikan di model.
+     */
     public function show(Transaksi $transaksi)
     {
-        // Sekarang kita load juga relasi 'produks'
-        $transaksi->load('user', 'produks');
+        $transaksi->load('user', 'produks'); 
         return view('admin.pesanan.show', compact('transaksi'));
     }
 
-    // Memperbarui status pesanan
+    /**
+     * Memperbarui status konfirmasi pesanan.
+     * Menggunakan $transaksi agar sesuai dengan route model binding.
+     */
     public function update(Request $request, Transaksi $transaksi)
     {
         $request->validate([
@@ -37,6 +44,10 @@ class PesananAdminController extends Controller
         return redirect()->route('admin.pesanan.show', $transaksi)->with('success', 'Status pesanan berhasil diperbarui!');
     }
 
+    /**
+     * Memperbarui status PEMBAYARAN pesanan.
+     * Method ini diambil dari 'cabangke2' dan disesuaikan.
+     */
     public function updatePaymentStatus(Request $request, Transaksi $transaksi)
     {
         $request->validate([
@@ -47,5 +58,18 @@ class PesananAdminController extends Controller
         $transaksi->save();
 
         return redirect()->route('admin.pesanan.show', $transaksi)->with('success', 'Status PEMBAYARAN berhasil diperbarui!');
+    }
+    
+    /**
+     * Menghapus pesanan.
+     * Menggunakan $transaksi agar sesuai dengan route model binding.
+     */
+    public function destroy(Transaksi $transaksi)
+    {
+        // Logika untuk menghapus detail transaksi terkait sebelum menghapus transaksi utama
+        $transaksi->produks()->detach(); // Menghapus record dari tabel pivot
+        $transaksi->delete();
+
+        return redirect()->route('admin.pesanan.index')->with('success', 'Pesanan berhasil dihapus!');
     }
 }
