@@ -28,7 +28,7 @@
                                         <input type="number" name="quantity" value="{{ $details['quantity'] }}" min="1" class="w-16 text-center border-gray-300 rounded-l-md">
                                         <button type="submit" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-r-md text-sm">Update</button>
                                     </form>
-                                    <form action="{{ route('cart.remove') }}" method="POST" class="ml-4">
+                                    <form action="{{ route('cart.remove', $id) }}" method="POST" class="ml-4">
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="product_id" value="{{ $id }}">

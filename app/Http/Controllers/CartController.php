@@ -53,13 +53,15 @@ class CartController extends Controller
     }
 
     // Menghapus produk dari keranjang
-    public function remove(Request $request)
+    public function remove($id)
     {
         $cart = session()->get('cart');
-        if(isset($cart[$request->product_id])) {
-            unset($cart[$request->product_id]);
+    
+        if(isset($cart[$id])) {
+            unset($cart[$id]); // Hapus item dari array berdasarkan ID dari URL
             session()->put('cart', $cart);
         }
+    
         return redirect()->back()->with('success', 'Produk berhasil dihapus dari keranjang!');
     }
 }

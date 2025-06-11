@@ -56,7 +56,7 @@
     </nav>
 
     <header class="relative min-h-[90vh] bg-cover bg-center flex items-center" style="background-image: url('https://images.unsplash.com/photo-1562690868-60336d15215C?q=80&w=1887&auto=format&fit=crop');">
-        <div class="absolute inset-0 bg-black opacity-30"></div>
+        <div class="absolute inset-0 bg-pink-600"></div>
         <div class="relative container mx-auto px-6 text-center text-white">
             <h1 class="text-5xl md:text-7xl font-playfair font-bold drop-shadow-lg">Ungkapkan Perasaan, Lewat Bunga</h1>
             <p class="mt-4 text-lg md:text-xl max-w-2xl mx-auto drop-shadow-md">Kado terindah untuk setiap momen berharga dalam hidup Anda.</p>

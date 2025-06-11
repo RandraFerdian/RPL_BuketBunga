@@ -7,34 +7,36 @@ use Illuminate\Http\Request;
 
 class PesananAdminController extends Controller
 {
-    // Menampilkan daftar semua pesanan
+    /**
+     * Menampilkan daftar semua pesanan.
+     */
     public function index()
     {
-        // Ganti nama variabel dari $transaksi menjadi $pesanans
-        $pesanans = Transaksi::with('user')->latest()->paginate(15);
-        // Kirim 'pesanans' ke view
-        return view('admin.pesanan.index', compact('pesanans'));
+        $pesanan = Transaksi::with('user')->latest()->paginate(15);
+        return view('admin.pesanan.index', compact('pesanan'));
     }
 
-    // Menampilkan detail satu pesanan
-    public function show(Transaksi $transaksi)
+    /**
+     * Menampilkan detail satu pesanan.
+     */
+    public function show(Transaksi $pesanan)
     {
-        // Kita belum punya detail transaksi, jadi kita lewati dulu
-        // $transaksi->load('user', 'detailTransaksi.produk'); 
-        $transaksi->load('user');
-        return view('admin.pesanan.show', compact('transaksi'));
+        $pesanan->load('user', 'detailTransaksi.produk'); 
+        return view('admin.pesanan.show', compact('pesanan'));
     }
 
-    // Memperbarui status pesanan
-    public function update(Request $request, Transaksi $transaksi)
+    /**
+     * Memperbarui status pesanan.
+     */
+    public function update(Request $request, Transaksi $pesanan)
     {
         $request->validate([
             'status_konfirmasi' => 'required|in:menunggu,diproses,selesai,dibatalkan',
         ]);
 
-        $transaksi->status_konfirmasi = $request->status_konfirmasi;
-        $transaksi->save();
+        $pesanan->status_konfirmasi = $request->status_konfirmasi;
+        $pesanan->save();
 
-        return redirect()->route('pesanan.show', $transaksi)->with('success', 'Status pesanan berhasil diperbarui!');
+        return redirect()->route('admin.pesanan.show', $pesanan)->with('success', 'Status pesanan berhasil diperbarui!');
     }
 }

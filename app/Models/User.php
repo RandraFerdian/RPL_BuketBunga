@@ -6,16 +6,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\Transaksi;
+use Illuminate\Database\Eloquent\Relations\HasMany; 
+use App\Models\Transaksi; 
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
     /**
-     * Atribut yang boleh diisi secara massal (mass assignable).
-     * Ini adalah "daftar putih" kolom yang aman untuk diisi saat membuat atau mengupdate user.
+     * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
@@ -24,12 +23,11 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
-        'role', // Penting untuk membedakan admin dan pelanggan
+        'role',
     ];
 
     /**
-     * Atribut yang harus disembunyikan saat diubah menjadi array atau JSON.
-     * Ini untuk keamanan agar password tidak pernah bocor.
+     * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
      */
@@ -39,7 +37,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Atribut yang harus di-cast ke tipe data tertentu.
+     * Get the attributes that should be cast.
      *
      * @return array<string, string>
      */
@@ -47,10 +45,13 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed', // Otomatis mengenkripsi password saat disimpan
+            'password' => 'hashed',
         ];
     }
-
+    
+    // ===============================================
+    // ==== TAMBAHKAN METHOD INI DI DALAM CLASS ====
+    // ===============================================
     /**
      * Mendefinisikan relasi ke model Transaksi.
      * Nama method ini ("transaksi") adalah yang kita panggil di controller.
@@ -58,6 +59,8 @@ class User extends Authenticatable
      */
     public function transaksi(): HasMany
     {
+        // Parameter kedua ('id_user') adalah foreign key di tabel 'transaksi'
+        // yang menghubungkan ke tabel 'users'.
         return $this->hasMany(Transaksi::class, 'id_user');
     }
 }
