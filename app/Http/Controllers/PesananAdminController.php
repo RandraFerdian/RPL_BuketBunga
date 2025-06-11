@@ -19,9 +19,8 @@ class PesananAdminController extends Controller
     // Menampilkan detail satu pesanan
     public function show(Transaksi $transaksi)
     {
-        // Kita belum punya detail transaksi, jadi kita lewati dulu
-        // $transaksi->load('user', 'detailTransaksi.produk'); 
-        $transaksi->load('user');
+        // Sekarang kita load juga relasi 'produks'
+        $transaksi->load('user', 'produks');
         return view('admin.pesanan.show', compact('transaksi'));
     }
 
@@ -35,6 +34,18 @@ class PesananAdminController extends Controller
         $transaksi->status_konfirmasi = $request->status_konfirmasi;
         $transaksi->save();
 
-        return redirect()->route('pesanan.show', $transaksi)->with('success', 'Status pesanan berhasil diperbarui!');
+        return redirect()->route('admin.pesanan.show', $transaksi)->with('success', 'Status pesanan berhasil diperbarui!');
+    }
+
+    public function updatePaymentStatus(Request $request, Transaksi $transaksi)
+    {
+        $request->validate([
+            'status_pembayaran' => 'required|in:lunas,belum lunas,dibatalkan',
+        ]);
+
+        $transaksi->status_pembayaran = $request->status_pembayaran;
+        $transaksi->save();
+
+        return redirect()->route('admin.pesanan.show', $transaksi)->with('success', 'Status PEMBAYARAN berhasil diperbarui!');
     }
 }

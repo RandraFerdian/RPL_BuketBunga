@@ -34,14 +34,6 @@ Route::controller(CartController::class)->name('cart.')->prefix('keranjang')->gr
     Route::delete('/hapus/{rowId}', 'remove')->name('remove');
 });
 
-// --- Grup Checkout & Riwayat Pesanan ---
-Route::controller(CheckoutController::class)->group(function () {
-    Route::get('/checkout', 'showCheckoutPage')->name('checkout.show');
-    Route::post('/checkout/now', 'showCheckoutNowPage')->name('checkout.now'); // <-- TAMBAHKAN KEMBALI BARIS INI
-    Route::post('/checkout/process', 'processOrder')->name('checkout.process');
-    Route::get('/order/{transaksi}/confirmation', 'showConfirmationPage')->name('order.confirmation');
-});
-
 
 //======================================================================
 // RUTE UNTUK PENGGUNA TERAUTENTIKASI (Wajib Login)
@@ -57,13 +49,16 @@ Route::middleware('auth')->group(function () {
         Route::delete('/', 'destroy')->name('destroy');
     });
 
-    // --- Grup Checkout & Riwayat Pesanan ---
+    // --- Grup Checkout & Konfirmasi (SUDAH DIPERBAIKI & DIGABUNG) ---
     Route::controller(CheckoutController::class)->group(function () {
         Route::get('/checkout', 'showCheckoutPage')->name('checkout.show');
+        Route::post('/checkout/now', 'showCheckoutNowPage')->name('checkout.now');
         Route::post('/checkout/process', 'processOrder')->name('checkout.process');
         Route::get('/order/{transaksi}/confirmation', 'showConfirmationPage')->name('order.confirmation');
+        Route::get('/order/{transaksi}/cod-confirmation', 'showCodConfirmationPage')->name('order.cod_confirmation');
     });
 
+    // --- Grup Riwayat Pesanan ---
     Route::controller(OrderHistoryController::class)->prefix('riwayat-pesanan')->name('order.')->group(function () {
         Route::get('/', 'index')->name('history');
         Route::get('/{transaksi}', 'show')->name('show');
@@ -85,7 +80,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('produk', ProdukAdminController::class);
 
     // Otomatis memberi nama: admin.pesanan.index, admin.pesanan.show, dst.
-    Route::resource('pesanan', PesananAdminController::class)->except(['create', 'store', 'edit']);
+    Route::resource('pesanan', PesananAdminController::class)
+        ->parameters(['pesanan' => 'transaksi'])
+        ->except(['create', 'store', 'edit']);
+    Route::patch('/pesanan/{transaksi}/update-payment', [PesananAdminController::class, 'updatePaymentStatus'])->name('pesanan.updatePayment');
 });
 
 

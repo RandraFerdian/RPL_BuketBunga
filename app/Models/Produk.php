@@ -20,9 +20,14 @@ class Produk extends Model // <-- PASTIKAN NAMA CLASS-NYA BENAR
         'gambar',
     ];
 
-     public function stok()
+    public function stok()
     {
         // Parameter kedua ('id_produk') adalah foreign key di tabel 'stok'
         return $this->hasOne(Stok::class, 'id_produk');
+    }
+    public function transaksis()
+    {
+        return $this->belongsToMany(Transaksi::class, 'detail_transaksi', 'id_produk', 'id_transaksi')
+            ->withPivot('jumlah', 'harga_saat_transaksi');
     }
 }

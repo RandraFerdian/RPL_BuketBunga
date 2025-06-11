@@ -4,24 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Produk;
 use App\Models\Transaksi;
-use App\Models\DetailTransaksi; // <-- TAMBAHKAN INI
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class CheckoutController extends Controller
 {
     /**
-     * ALUR 1: Menampilkan halaman checkout untuk item dari KERANJANG BELANJA.
-     * Logika ini membaca data dari Session.
+     * Menampilkan halaman checkout dari keranjang atau "Beli Sekarang".
      */
     public function showCheckoutPage()
     {
-        $cart = session()->get('cart', []);
+        // Logika ini bisa digabung karena tujuannya sama
+        $cart = session()->get('cart_checkout', session()->get('cart', []));
 
         if (empty($cart)) {
-            // Jika keranjang kosong, kembalikan ke katalog
-            return redirect()->route('katalog.index')->with('error', 'Keranjang Anda kosong!');
+            return redirect()->route('katalog.index')->with('error', 'Tidak ada item untuk di-checkout!');
         }
 
         $totalHarga = 0;
@@ -29,13 +26,11 @@ class CheckoutController extends Controller
             $totalHarga += $details['price'] * $details['quantity'];
         }
 
-        // Kirim data keranjang dan total harga ke view yang sama
         return view('checkout', compact('cart', 'totalHarga'));
     }
 
     /**
-     * ALUR 2: Menampilkan halaman checkout untuk "BELI SEKARANG".
-     * Logika ini membaca data dari Request (form di halaman detail).
+     * Memproses data dari tombol "Beli Sekarang".
      */
     public function showCheckoutNowPage(Request $request)
     {
@@ -45,68 +40,73 @@ class CheckoutController extends Controller
         ]);
 
         $produk = Produk::findOrFail($request->product_id);
-        $quantity = (int)$request->quantity;
-        $totalHarga = $produk->harga * $quantity;
 
-        // Kita "simulasikan" struktur data keranjang, tapi hanya dengan satu item ini.
         $cart = [
             $produk->id => [
                 "name" => $produk->nama_produk,
-                "quantity" => $quantity,
+                "quantity" => (int)$request->quantity,
                 "price" => $produk->harga,
                 "image" => $produk->gambar
             ]
         ];
 
-        // Simpan "keranjang simulasi" ini ke session agar bisa diproses.
+        // Simpan ke session sementara dan alihkan ke halaman checkout utama
         session()->put('cart_checkout', $cart);
-
-        return view('checkout', compact('cart', 'totalHarga'));
+        return redirect()->route('checkout.show');
     }
 
     /**
-     * Memproses pesanan dari KEDUA ALUR dan menyimpannya ke database.
+     * [FIXED] Memproses pesanan dan menyimpannya ke database.
      */
     public function processOrder(Request $request)
     {
-        $request->validate([
-            'phone' => 'required|string|max:15',
-            'metode_pembayaran' => 'required|in:online,cod', // Validasi pilihan pembayaran
+        // 1. Validasi Input (termasuk alamat pengiriman)
+        $validatedData = $request->validate([
+            'nama_lengkap' => 'required|string|max:255',
+            'nomor_telepon' => 'required|string|max:15',
+            'alamat_pengiriman' => 'required|string|max:255',
+            'metode_pembayaran' => 'required|in:online,cod',
         ]);
-    
+
         $cart = session()->get('cart_checkout', session()->get('cart', []));
         if (empty($cart)) {
-            return redirect()->route('katalog.index')->with('error', 'Tidak ada item untuk di-checkout!');
+            return redirect()->route('katalog.index')->with('error', 'Sesi checkout berakhir, silakan coba lagi.');
         }
-    
+
         $totalHarga = 0;
-        foreach ($cart as $details) { $totalHarga += $details['price'] * $details['quantity']; }
-    
-        // Simpan transaksi ke database dengan metode pembayaran yang dipilih
+        foreach ($cart as $details) {
+            $totalHarga += $details['price'] * $details['quantity'];
+        }
+
+        // 2. Simpan Transaksi Utama (tanpa tanggal_transaksi manual)
+        // Di dalam method processOrder()
+
         $transaksi = Transaksi::create([
             'id_user' => Auth::id(),
-            'tanggal_transaksi' => Carbon::now(),
+            'tanggal_transaksi' => now(), // <-- TAMBAHKAN KEMBALI BARIS INI
             'total_harga' => $totalHarga,
-            'metode_pembayaran' => $request->metode_pembayaran, // <-- Mengambil dari pilihan user
+            'alamat_pengiriman' => $validatedData['alamat_pengiriman'],
+            'metode_pembayaran' => $validatedData['metode_pembayaran'],
             'status_pembayaran' => 'belum lunas',
             'status_konfirmasi' => 'menunggu',
         ]);
-    
+
+        // 3. Simpan Detail Transaksi menggunakan relasi (sudah benar)
         foreach ($cart as $id => $details) {
-            DetailTransaksi::create([
-                'id_transaksi' => $transaksi->id, 'id_produk' => $id,
-                'jumlah' => $details['quantity'], 'harga_satuan' => $details['price'],
+            $transaksi->produks()->attach($id, [
+                'jumlah' => $details['quantity'],
+                'harga_saat_transaksi' => $details['price'], // <-- Menggunakan nama kolom yang benar
             ]);
         }
-    
-        session()->forget('cart');
-        session()->forget('cart_checkout');
-    
-        // LOGIKA PENGALIHAN BERDASARKAN METODE PEMBAYARAN
+
+        // Hapus session setelah berhasil
+        session()->forget(['cart', 'cart_checkout']);
+
+        // Alihkan ke halaman konfirmasi yang sesuai
         if ($request->metode_pembayaran === 'cod') {
-            return redirect()->route('order.cod_confirmation', ['transaksi' => $transaksi->id]);
+            return redirect()->route('order.cod_confirmation', $transaksi->id);
         } else {
-            return redirect()->route('order.confirmation', ['transaksi' => $transaksi->id]);
+            return redirect()->route('order.confirmation', $transaksi->id);
         }
     }
 
@@ -115,16 +115,18 @@ class CheckoutController extends Controller
      */
     public function showConfirmationPage(Transaksi $transaksi)
     {
-        // Pastikan hanya user yang membuat transaksi yang bisa melihatnya
         if ($transaksi->id_user !== Auth::id()) {
             abort(403);
         }
         return view('order-confirmation', compact('transaksi'));
     }
 
+    /**
+     * Menampilkan halaman konfirmasi COD.
+     */
     public function showCodConfirmationPage(Transaksi $transaksi)
     {
-        if ($transaksi->id_user !== Auth::id() && Auth::user()->role !== 'admin') {
+        if ($transaksi->id_user !== Auth::id()) {
             abort(403);
         }
         return view('cod-confirmation', compact('transaksi'));
