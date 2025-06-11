@@ -26,6 +26,7 @@ class Transaksi extends Model
         'metode_pembayaran',
         'status_pembayaran',
         'status_konfirmasi',
+        'alamat_pengiriman',
     ];
 
     /**
@@ -44,5 +45,12 @@ class Transaksi extends Model
     public function detailTransaksi(): HasMany
     {
         return $this->hasMany(DetailTransaksi::class, 'id_transaksi');
+    }
+    public function produks()
+    {
+        // Relasi many-to-many ke Produk melalui tabel pivot 'detail_transaksi'
+        // withPivot akan mengambil kolom tambahan dari tabel pivot
+        return $this->belongsToMany(Produk::class, 'detail_transaksi', 'id_transaksi', 'id_produk')
+            ->withPivot('jumlah', 'harga_saat_transaksi');
     }
 }

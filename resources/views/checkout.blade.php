@@ -14,26 +14,31 @@
                     
                     {{-- Detail Pelanggan --}}
                     <div>
-                        <h2 class="text-2xl font-semibold mb-6">Detail Pelanggan</h2>
+                        <h2 class="text-2xl font-semibold mb-6">Detail Pengiriman</h2>
                         <div class="space-y-4">
+                            
+                            {{-- PERBAIKAN 1: NAMA INPUT & HAPUS READONLY --}}
                             <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                                <input type="text" id="name" name="name" value="{{ Auth::user()->name }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-200" readonly>
+                                <label for="nama_lengkap" class="block text-sm font-medium text-gray-700">Nama Lengkap Penerima</label>
+                                <input type="text" id="nama_lengkap" name="nama_lengkap" value="{{ old('nama_lengkap', Auth::user()->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                             </div>
+
+                            {{-- PERBAIKAN 2: NAMA INPUT --}}
                             <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                                <input type="email" id="email" name="email" value="{{ Auth::user()->email }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-200" readonly>
+                                <label for="nomor_telepon" class="block text-sm font-medium text-gray-700">Nomor Telepon (WhatsApp)</label>
+                                <input type="text" id="nomor_telepon" name="nomor_telepon" placeholder="Contoh: 08123456789" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                             </div>
+
+                            {{-- PENAMBAHAN 3: INPUT ALAMAT --}}
                             <div>
-                                <label for="phone" class="block text-sm font-medium text-gray-700">Nomor Telepon (WhatsApp)</label>
-                                <input type="text" id="phone" name="phone" placeholder="Contoh: 08123456789" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                <label for="alamat_pengiriman" class="block text-sm font-medium text-gray-700">Alamat Pengiriman Lengkap</label>
+                                <textarea id="alamat_pengiriman" name="alamat_pengiriman" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Masukkan nama jalan, nomor rumah, kelurahan, kecamatan, dll." required>{{ old('alamat_pengiriman') }}</textarea>
                             </div>
+
                         </div>
                     </div>
 
-                    {{-- ====================================================== --}}
-                    {{-- ==== REVISI: MENAMBAHKAN PILIHAN METODE PEMBAYARAN ==== --}}
-                    {{-- ====================================================== --}}
+                    {{-- Metode Pembayaran --}}
                     <div>
                         <h3 class="text-2xl font-semibold mb-6">Metode Pembayaran</h3>
                         <div class="mt-4 space-y-4">
@@ -56,6 +61,7 @@
 
                 </div>
 
+                {{-- Ringkasan Pesanan (Kolom Kanan) --}}
                 <div class="bg-gray-50 p-8 rounded-lg shadow-sm self-start sticky top-28">
                     <h2 class="text-2xl font-semibold mb-6">Ringkasan Pesanan</h2>
                     <div class="space-y-4">
