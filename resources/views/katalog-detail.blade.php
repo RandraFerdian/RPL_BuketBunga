@@ -1,10 +1,6 @@
-{{-- Memberitahu Blade untuk menggunakan layout 'app.blade.php' --}}
 @extends('layouts.app')
-
-{{-- Mengatur judul halaman secara dinamis berdasarkan nama produk --}}
 @section('title', $produk->nama_produk . ' - Daara Bouquet')
 
-{{-- Mendefinisikan konten utama untuk halaman ini --}}
 @section('content')
 <div class="bg-white py-12">
     <div class="container mx-auto px-6">
@@ -39,7 +35,7 @@
 
                 <div class="mt-6 border-t pt-6">
                     <div class="flex items-center">
-                        <label for="ukuran" class="text-base font-medium text-gray-900 w-24">Ukuran:</label>
+                        <label class="text-base font-medium text-gray-900 w-24">Ukuran:</label>
                         <span class="px-4 py-2 bg-pink-100 text-pink-800 font-semibold rounded-full">{{ ucfirst($produk->ukuran) }}</span>
                     </div>
                 </div>
@@ -52,43 +48,55 @@
                 </div>
 
                 {{-- ====================================================== --}}
-                {{-- ==== REVISI: Bagian Aksi (Jumlah & Tombol) ==== --}}
+                {{-- ==== REVISI: Logika Pengecekan Stok Ditambahkan ==== --}}
                 {{-- ====================================================== --}}
-                <div class="mt-10" x-data="{ quantity: 1 }">
-                    <div class="flex items-center space-x-4 mb-6">
-                        <p class="text-base font-medium text-gray-900 w-20">Jumlah:</p>
-                        <div class="flex items-center border border-gray-300 rounded-lg">
-                            <button type="button" @click="if (quantity > 1) quantity--" class="px-4 py-2 text-lg font-bold text-gray-700 hover:bg-gray-200 rounded-l-lg">-</button>
-                            <input type="text" x-model="quantity" class="w-16 text-center font-bold border-t border-b border-gray-300 focus:outline-none" readonly>
-                            <button type="button" @click="quantity++" class="px-4 py-2 text-lg font-bold text-gray-700 hover:bg-gray-200 rounded-r-lg">+</button>
+                <div class="mt-10">
+                    {{-- Cek apakah data stok ada DAN jumlahnya lebih dari 0 --}}
+                    @if($produk->stok && $produk->stok->jumlah > 0)
+                        <div x-data="{ quantity: 1, max_stock: {{ $produk->stok->jumlah }} }">
+                            <p class="text-sm text-green-600 mb-4">Stok tersedia: {{ $produk->stok->jumlah }} buah</p>
+                            <div class="flex items-center space-x-4 mb-6">
+                                <p class="text-base font-medium text-gray-900 w-20">Jumlah:</p>
+                                <div class="flex items-center border border-gray-300 rounded-lg">
+                                    <button type="button" @click="if (quantity > 1) quantity--" class="px-4 py-2 text-lg font-bold text-gray-700 hover:bg-gray-200 rounded-l-lg">-</button>
+                                    <input type="text" x-model="quantity" class="w-16 text-center font-bold border-t border-b border-gray-300 focus:outline-none" readonly>
+                                    {{-- Tombol + tidak akan berfungsi jika jumlah melebihi stok --}}
+                                    <button type="button" @click="if (quantity < max_stock) quantity++" class="px-4 py-2 text-lg font-bold text-gray-700 hover:bg-gray-200 rounded-r-lg" :class="{ 'cursor-not-allowed': quantity >= max_stock }">+</button>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <form action="{{ route('cart.add') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $produk->id }}">
+                                    <input type="hidden" name="quantity" :value="quantity">
+                                    <button type="submit" class="w-full h-full px-8 py-4 bg-pink-100 text-pink-700 font-bold rounded-lg text-lg hover:bg-pink-200 transition-colors">
+                                        + Keranjang
+                                    </button>
+                                </form>
+
+                                <form action="{{ route('checkout.now') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $produk->id }}">
+                                    <input type="hidden" name="quantity" :value="quantity">
+                                    <button type="submit" class="w-full h-full px-8 py-4 bg-gray-800 text-white font-bold rounded-lg text-lg hover:bg-gray-700 transition-colors shadow-lg">
+                                        Beli Sekarang
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <form action="{{ route('cart.add') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $produk->id }}">
-                            <input type="hidden" name="quantity" :value="quantity">
-                            <button type="submit" class="w-full h-full px-8 py-4 bg-pink-100 text-pink-700 font-bold rounded-lg text-lg hover:bg-pink-200 transition-colors">
-                                + Keranjang
-                            </button>
-                        </form>
-
-                        <form action="{{ route('checkout.now') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $produk->id }}">
-                            <input type="hidden" name="quantity" :value="quantity">
-                            <button type="submit" class="w-full h-full px-8 py-4 bg-gray-800 text-white font-bold rounded-lg text-lg hover:bg-gray-700 transition-colors shadow-lg">
-                                Beli Sekarang
-                            </button>
-                        </form>
-                    </div>
+                    @else
+                        {{-- Tampilan jika stok habis --}}
+                        <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-center">
+                            <p class="font-bold text-red-700">Stok Habis</p>
+                            <p class="text-sm text-red-600 mt-1">Mohon maaf, produk ini sedang tidak tersedia.</p>
+                        </div>
+                    @endif
                 </div>
                 {{-- ====================================================== --}}
                 {{-- ================= END REVISI ======================= --}}
                 {{-- ====================================================== --}}
             </div>
-
         </div>
     </div>
 </div>

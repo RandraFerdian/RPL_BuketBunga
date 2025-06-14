@@ -2,72 +2,86 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Stok; // <-- IMPORT MODEL STOK
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB; // <-- IMPORT DB FACADE
 
 class PesananAdminController extends Controller
 {
-    /**
-     * Menampilkan daftar semua pesanan.
-     */
     public function index()
     {
-        // Menggunakan nama variabel jamak '$transaksis' untuk kumpulan data
         $transaksis = Transaksi::with('user')->latest()->paginate(15);
         return view('admin.pesanan.index', compact('transaksis'));
     }
 
-    /**
-     * Menampilkan detail satu pesanan.
-     * Menggunakan $transaksi agar sesuai dengan route model binding.
-     * Memuat relasi 'produks' yang sudah kita definisikan di model.
-     */
     public function show(Transaksi $transaksi)
     {
-        $transaksi->load('user', 'produks'); 
+        // Muat relasi user dan detail transaksi beserta produk di dalamnya
+        $transaksi->load('user', 'detailTransaksi.produk'); 
         return view('admin.pesanan.show', compact('transaksi'));
     }
 
     /**
-     * Memperbarui status konfirmasi pesanan.
-     * Menggunakan $transaksi agar sesuai dengan route model binding.
+     * [REVISI TOTAL] Memperbarui status pesanan (konfirmasi & pembayaran)
+     * dan mengembalikan stok jika pesanan dibatalkan.
      */
     public function update(Request $request, Transaksi $transaksi)
     {
         $request->validate([
-            'status_konfirmasi' => 'required|in:menunggu,diproses,selesai,dibatalkan',
+            'status_konfirmasi' => 'sometimes|required|in:menunggu,diproses,selesai,dibatalkan',
+            'status_pembayaran' => 'sometimes|required|in:lunas,belum lunas',
         ]);
 
-        $transaksi->status_konfirmasi = $request->status_konfirmasi;
-        $transaksi->save();
+        DB::beginTransaction();
+        try {
+            $statusKonfirmasiLama = $transaksi->status_konfirmasi;
 
-        return redirect()->route('admin.pesanan.show', $transaksi)->with('success', 'Status pesanan berhasil diperbarui!');
+            // Update status pembayaran jika ada di request
+            if ($request->has('status_pembayaran')) {
+                $transaksi->status_pembayaran = $request->status_pembayaran;
+            }
+
+            // Update status konfirmasi jika ada di request
+            if ($request->has('status_konfirmasi')) {
+                $statusKonfirmasiBaru = $request->status_konfirmasi;
+                $transaksi->status_konfirmasi = $statusKonfirmasiBaru;
+
+                // LOGIKA UTAMA: Jika status diubah menjadi 'dibatalkan'
+                // dan status sebelumnya BUKAN 'dibatalkan', kembalikan stok.
+                if ($statusKonfirmasiBaru === 'dibatalkan' && $statusKonfirmasiLama !== 'dibatalkan') {
+                    // Muat relasi detailTransaksi jika belum ada
+                    $transaksi->loadMissing('detailTransaksi');
+                    
+                    foreach ($transaksi->detailTransaksi as $detail) {
+                        Stok::where('id_produk', $detail->id_produk)->increment('jumlah', $detail->jumlah);
+                    }
+                }
+            }
+
+            $transaksi->save();
+            DB::commit();
+
+            return redirect()->route('admin.pesanan.show', $transaksi)->with('success', 'Status pesanan berhasil diperbarui!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('admin.pesanan.show', $transaksi)->with('error', 'Gagal memperbarui status. Error: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Memperbarui status PEMBAYARAN pesanan.
-     * Method ini diambil dari 'cabangke2' dan disesuaikan.
-     */
-    public function updatePaymentStatus(Request $request, Transaksi $transaksi)
-    {
-        $request->validate([
-            'status_pembayaran' => 'required|in:lunas,belum lunas,dibatalkan',
-        ]);
-
-        $transaksi->status_pembayaran = $request->status_pembayaran;
-        $transaksi->save();
-
-        return redirect()->route('admin.pesanan.show', $transaksi)->with('success', 'Status PEMBAYARAN berhasil diperbarui!');
-    }
-    
-    /**
-     * Menghapus pesanan.
-     * Menggunakan $transaksi agar sesuai dengan route model binding.
-     */
     public function destroy(Transaksi $transaksi)
     {
-        // Logika untuk menghapus detail transaksi terkait sebelum menghapus transaksi utama
-        $transaksi->produks()->detach(); // Menghapus record dari tabel pivot
+        // Sebelum menghapus, pastikan stok sudah dikembalikan jika pesanan belum selesai/dibatalkan
+        if ($transaksi->status_konfirmasi !== 'selesai' && $transaksi->status_konfirmasi !== 'dibatalkan') {
+            $transaksi->loadMissing('detailTransaksi');
+            foreach ($transaksi->detailTransaksi as $detail) {
+                Stok::where('id_produk', $detail->id_produk)->increment('jumlah', $detail->jumlah);
+            }
+        }
+        
+        // Hapus detail transaksi terlebih dahulu
+        $transaksi->detailTransaksi()->delete();
         $transaksi->delete();
 
         return redirect()->route('admin.pesanan.index')->with('success', 'Pesanan berhasil dihapus!');

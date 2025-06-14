@@ -1,107 +1,108 @@
-@extends('layouts.app')
+@extends('layouts.app') 
+@section('title', 'Detail Pesanan #' . $transaksi->id)
 
 @section('content')
-<header class="bg-white shadow-sm">
-    <div class="container mx-auto px-6 py-5">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Detail Pesanan #{{ $transaksi->id }}
-        </h2>
+<div class="container mx-auto px-6 py-8">
+    <div class="flex justify-between items-center">
+        <h1 class="text-3xl font-bold text-gray-800">Detail Pesanan #{{ $transaksi->id }}</h1>
+        <a href="{{ route('admin.pesanan.index') }}" class="text-pink-600 hover:text-pink-800">&larr; Kembali ke Daftar Pesanan</a>
     </div>
-</header>
 
-<div class="py-12">
-    <div class="container mx-auto px-6">
-        
-        {{-- Tombol Kembali (diambil dari branch 'main' dan diletakkan di atas) --}}
-        <div class="mb-6">
-            <a href="{{ route('admin.pesanan.index') }}" class="text-sm text-gray-600 hover:text-pink-500 inline-flex items-center">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                Kembali ke Daftar Pesanan
-            </a>
+    {{-- Menampilkan notifikasi sukses setelah update --}}
+    @if (session('success'))
+        <div class="bg-green-100 border-l-4 border-green-500 text-green-800 p-4 my-6 rounded-md shadow-sm" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {{-- Kolom Kiri: Detail Informasi Pesanan --}}
+        <div class="lg:col-span-2 bg-white p-8 rounded-lg shadow-md space-y-6">
+            <div>
+                <h2 class="text-xl font-semibold border-b pb-2 mb-4">Informasi Pelanggan</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p><strong>Nama:</strong> {{ $transaksi->user->name ?? 'Pelanggan Dihapus' }}</p>
+                    <p><strong>Email:</strong> {{ $transaksi->user->email ?? '-' }}</p>
+                    <p class="md:col-span-2"><strong>Alamat Pengiriman:</strong><br>{{ $transaksi->alamat_pengiriman }}</p>
+                </div>
+            </div>
+            
+            <div class="border-t pt-6">
+                <h2 class="text-xl font-semibold border-b pb-2 mb-4">Detail Barang Pesanan</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="text-left py-2 px-3">Produk</th>
+                                <th class="text-center py-2 px-3">Jumlah</th>
+                                <th class="text-right py-2 px-3">Harga Satuan</th>
+                                <th class="text-right py-2 px-3">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($transaksi->detailTransaksi as $detail)
+                            <tr class="border-b">
+                                <td class="py-3 px-3">{{ $detail->produk->nama_produk }}</td>
+                                <td class="text-center py-3 px-3">{{ $detail->jumlah }}</td>
+                                <td class="text-right py-3 px-3">Rp{{ number_format($detail->harga_saat_transaksi) }}</td>
+                                <td class="text-right py-3 px-3">Rp{{ number_format($detail->jumlah * $detail->harga_saat_transaksi) }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr class="font-bold">
+                                <td colspan="3" class="text-right py-3 px-3 border-t-2">Total</td>
+                                <td class="text-right py-3 px-3 text-lg border-t-2">Rp{{ number_format($transaksi->total_harga) }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        {{-- Notifikasi Sukses --}}
-        @if (session('success'))
-            <div class="mb-6 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 rounded-md" role="alert">
-                <p class="font-bold">{{ session('success') }}</p>
-            </div>
-        @endif
-
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+        {{-- Kolom Kanan: Form untuk Update Status --}}
+        <div class="bg-white p-8 rounded-lg shadow-md self-start">
+            <h2 class="text-xl font-semibold border-b pb-2 mb-4">Update Status</h2>
             
-            {{-- Kolom Kiri - Detail Pesanan & Produk --}}
-            <div class="md:col-span-2 space-y-6">
-                <div>
-                    <h3 class="text-lg font-bold border-b pb-2 mb-3">Detail Pelanggan</h3>
-                    <p><strong>Nama:</strong> {{ $transaksi->user->name ?? 'Guest' }}</p>
-                    <p><strong>Email:</strong> {{ $transaksi->user->email ?? '-' }}</p>
-                    <p><strong>Alamat Pengiriman:</strong> {{ $transaksi->alamat_pengiriman }}</p>
-                    <p><strong>Tanggal Pesan:</strong> {{ $transaksi->created_at ? $transaksi->created_at->format('d F Y, H:i') : 'Tanggal tidak tersedia' }}</p>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold border-b pb-2 mb-3">Detail Produk Dipesan</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 mt-2">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Produk</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Jumlah</th>
-                                    <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase">Harga Satuan</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($transaksi->produks as $produk)
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">{{ $produk->nama_produk }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">{{ $produk->pivot->jumlah }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-right">Rp{{ number_format($produk->pivot->harga_saat_transaksi) }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="3" class="px-4 py-3 text-center text-gray-500">Detail produk tidak ditemukan.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            {{-- Form ini sekarang mengarah ke route yang benar dan menggunakan method PUT --}}
+            <form action="{{ route('admin.pesanan.update', $transaksi->id) }}" method="POST">
+                @csrf
+                @method('PUT')
 
-            {{-- Kolom Kanan - Status & Aksi --}}
-            <div class="bg-gray-50 p-6 rounded-lg self-start space-y-6">
-                <div>
-                    <h3 class="text-lg font-bold mb-4">Update Status Pesanan</h3>
-                    <form action="{{ route('admin.pesanan.update', $transaksi->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div>
-                            <label for="status_konfirmasi" class="block text-sm font-medium text-gray-700">Ubah Status</label>
-                            <select name="status_konfirmasi" id="status_konfirmasi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                                <option value="menunggu" @if($transaksi->status_konfirmasi == 'menunggu') selected @endif>Menunggu</option>
-                                <option value="diproses" @if($transaksi->status_konfirmasi == 'diproses') selected @endif>Diproses</option>
-                                <option value="selesai" @if($transaksi->status_konfirmasi == 'selesai') selected @endif>Selesai</option>
-                                <option value="dibatalkan" @if($transaksi->status_konfirmasi == 'dibatalkan') selected @endif>Dibatalkan</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">Update Status</button>
-                    </form>
-                </div>
-
-                <div class="border-t border-gray-200"></div>
-
-                <div>
-                    <h3 class="text-lg font-bold mb-4">Update Status Pembayaran</h3>
-                    <form action="{{ route('admin.pesanan.updatePayment', $transaksi->id) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <label for="status_pembayaran" class="block text-sm font-medium text-gray-700">Ubah Status</label>
-                        <select name="status_pembayaran" id="status_pembayaran" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                <div class="space-y-6">
+                    <div>
+                        <label for="status_pembayaran" class="block text-sm font-medium text-gray-700">Status Pembayaran</label>
+                        <select id="status_pembayaran" name="status_pembayaran" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
                             <option value="belum lunas" {{ $transaksi->status_pembayaran == 'belum lunas' ? 'selected' : '' }}>Belum Lunas</option>
                             <option value="lunas" {{ $transaksi->status_pembayaran == 'lunas' ? 'selected' : '' }}>Lunas</option>
                         </select>
-                        <button type="submit" class="mt-4 w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600">Update Pembayaran</button>
-                    </form>
+                    </div>
+
+                    <div>
+                        <label for="status_konfirmasi" class="block text-sm font-medium text-gray-700">Status Pesanan</label>
+                        <select id="status_konfirmasi" name="status_konfirmasi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
+                            <option value="menunggu" {{ $transaksi->status_konfirmasi == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                            <option value="diproses" {{ $transaksi->status_konfirmasi == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                            <option value="selesai" {{ $transaksi->status_konfirmasi == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                            <option value="dibatalkan" {{ $transaksi->status_konfirmasi == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full px-4 py-3 bg-pink-600 text-white font-bold rounded-lg hover:bg-pink-700 transition-colors shadow-md">
+                        Update Status
+                    </button>
                 </div>
+            </form>
+
+            {{-- Opsi untuk Menghapus Pesanan --}}
+            <div class="border-t mt-6 pt-6">
+                <form action="{{ route('admin.pesanan.destroy', $transaksi->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini secara permanen? Stok akan dikembalikan jika pesanan belum selesai.');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="w-full text-sm text-red-600 hover:text-red-800 hover:underline">
+                        Hapus Pesanan Ini
+                    </button>
+                </form>
             </div>
         </div>
     </div>

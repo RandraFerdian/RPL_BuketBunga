@@ -4,6 +4,14 @@
 @section('title', 'Katalog Produk - Daara Bouquet')
 
 @section('content')
+@if (session('error'))
+    <div class="container mx-auto px-6 pt-6">
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow-md" role="alert">
+            <p class="font-bold">Terjadi Error Saat Memproses Pesanan!</p>
+            <p>{{ session('error') }}</p>
+        </div>
+    </div>
+@endif
     
     {{-- Bagian Banner --}}
     <section class="bg-pink-50">
