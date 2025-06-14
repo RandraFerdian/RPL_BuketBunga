@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,7 +9,14 @@ class DetailTransaksi extends Model
 {
     use HasFactory;
     protected $table = 'detail_transaksi';
-    protected $fillable = ['id_transaksi', 'id_produk', 'jumlah', 'harga_satuan'];
+
+   
+    protected $fillable = [
+        'id_transaksi',
+        'id_produk',
+        'jumlah',
+        'harga_satuan', 
+    ];
 
     public function produk()
     {

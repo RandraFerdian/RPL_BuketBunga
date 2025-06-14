@@ -11,22 +11,16 @@ class Transaksi extends Model
 {
     use HasFactory;
 
-    /**
-     * Nama tabel yang terhubung dengan model ini.
-     */
     protected $table = 'transaksi';
 
-    /**
-     * Kolom yang boleh diisi secara massal.
-     */
     protected $fillable = [
         'id_user',
         'tanggal_transaksi',
         'total_harga',
+        'alamat_pengiriman',
         'metode_pembayaran',
         'status_pembayaran',
         'status_konfirmasi',
-        'alamat_pengiriman',
     ];
 
     /**
