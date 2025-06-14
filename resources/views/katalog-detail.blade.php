@@ -16,13 +16,7 @@
             
             <div class="w-full sticky top-28">
                 <div class="bg-gray-100 rounded-lg shadow-lg overflow-hidden">
-                    @if($produk->gambar && Storage::disk('public')->exists($produk->gambar))
                         <img src="{{ asset('storage/' . $produk->gambar) }}" alt="Gambar {{ $produk->nama_produk }}" class="w-full h-auto object-cover aspect-square">
-                    @else
-                        <div class="w-full h-auto object-cover aspect-square flex items-center justify-center bg-gray-200">
-                            <span class="text-gray-500">Gambar tidak tersedia</span>
-                        </div>
-                    @endif
                 </div>
             </div>
 

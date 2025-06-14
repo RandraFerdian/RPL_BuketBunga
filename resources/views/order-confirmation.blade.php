@@ -29,8 +29,7 @@
                     <div>
                         <p class="font-bold mb-2">Scan QRIS (Semua E-Wallet & M-Banking)</p>
                         <div class="text-center">
-                             {{-- Ganti 'images/qris-daara.png' dengan path gambar QRIS Anda di folder /public --}}
-                             <img src="{{ asset('images/qris-daara.png') }}" alt="Scan QRIS untuk Pembayaran" class="mx-auto max-w-xs border p-2 rounded-lg shadow-sm">
+                            <img src="{{ asset('images/qris-contoh.jpg') }}" alt="Scan QRIS untuk Pembayaran" class="mx-auto max-w-xs border p-2 rounded-lg shadow-sm">
                         </div>
                     </div>
 
