@@ -13,7 +13,7 @@
     <div class="container mx-auto px-6">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 bg-white border-b border-gray-200">
-                
+
                 <form method="POST" action="{{ route('admin.produk.update', $produk->id) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
@@ -25,7 +25,14 @@
 
                     <div class="mb-4">
                         <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
-                        <input type="text" name="kategori" id="kategori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ old('kategori', $produk->kategori) }}" required>
+                        <select name="kategori" id="kategori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                            <option value="Money Bouquet" @if(old('kategori', $produk->kategori) == 'Money Bouquet') selected @endif>Money Bouquet</option>
+                            <option value="Artificial Flowers Bouquet" @if(old('kategori', $produk->kategori) == 'Artificial Flowers Bouquet') selected @endif>Artificial Flowers Bouquet</option>
+                            <option value="Snack Bouquet" @if(old('kategori', $produk->kategori) == 'Snack Bouquet') selected @endif>Snack Bouquet</option>
+                            <option value="Bouquet Boneka" @if(old('kategori', $produk->kategori) == 'Bouquet Boneka') selected @endif>Bouquet Boneka</option>
+                            <option value="Butterfly Bouquet" @if(old('kategori', $produk->kategori) == 'Butterfly Bouquet') selected @endif>Butterfly Bouquet</option>
+                            {{-- Tambahkan kategori lain jika perlu --}}
+                        </select>
                     </div>
 
                     <div class="mb-4">
@@ -62,7 +69,7 @@
                     <div class="mb-4">
                         <label for="gambar" class="block text-sm font-medium text-gray-700">Ganti Gambar (Opsional)</label>
                         @if($produk->gambar)
-                            <img src="{{ asset('storage/' . $produk->gambar) }}" alt="{{ $produk->nama_produk }}" class="w-32 h-32 object-cover rounded my-2">
+                        <img src="{{ asset('storage/' . $produk->gambar) }}" alt="{{ $produk->nama_produk }}" class="w-32 h-32 object-cover rounded my-2">
                         @endif
                         <input type="file" name="gambar" id="gambar" class="mt-1 block w-full">
                     </div>

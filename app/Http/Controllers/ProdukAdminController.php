@@ -31,28 +31,37 @@ class ProdukAdminController extends Controller
      */
     public function store(Request $request)
     {
+        // 1. Validasi semua input dari form, termasuk 'jumlah' untuk stok
         $validatedData = $request->validate([
             'nama_produk' => 'required|string|max:100',
             'kategori' => 'required|string|max:50',
             'ukuran' => 'required|in:petite,small,medium,large,extra large,custom',
             'harga' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'jumlah' => 'required|integer|min:0',
         ]);
 
+        // 2. Handle Upload Gambar (jika ada)
         if ($request->hasFile('gambar')) {
             $path = $request->file('gambar')->store('produk', 'public');
             $validatedData['gambar'] = $path;
         }
 
+        // 3. Pisahkan data produk dari data stok
         $produkData = Arr::except($validatedData, ['jumlah']);
+        
+        // 4. Buat record baru di tabel 'produk'
         $produk = Produk::create($produkData);
 
+        // 5. Buat record baru di tabel 'stok' yang berelasi dengan produk
         $produk->stok()->create([
             'jumlah' => $validatedData['jumlah'],
+            'status_stok' => 'tersedia', // Memberikan nilai default
+            'tanggal_cek' => now(),      // Memberikan nilai tanggal & waktu saat ini
         ]);
 
+        // 6. Arahkan kembali ke halaman daftar produk dengan pesan sukses
         return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil ditambahkan!');
     }
 
