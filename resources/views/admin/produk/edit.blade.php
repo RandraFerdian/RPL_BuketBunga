@@ -26,11 +26,15 @@
                     <div class="mb-4">
                         <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
                         <select name="kategori" id="kategori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                            <option value="Money Bouquet" @if(old('kategori', $produk->kategori) == 'Money Bouquet') selected @endif>Money Bouquet</option>
-                            <option value="Artificial Flowers Bouquet" @if(old('kategori', $produk->kategori) == 'Artificial Flowers Bouquet') selected @endif>Artificial Flowers Bouquet</option>
-                            <option value="Snack Bouquet" @if(old('kategori', $produk->kategori) == 'Snack Bouquet') selected @endif>Snack Bouquet</option>
-                            <option value="Bouquet Boneka" @if(old('kategori', $produk->kategori) == 'Bouquet Boneka') selected @endif>Bouquet Boneka</option>
-                            <option value="Butterfly Bouquet" @if(old('kategori', $produk->kategori) == 'Butterfly Bouquet') selected @endif>Butterfly Bouquet</option>
+                            <option value="MONEY BOUQUET" @if(old('kategori', $produk->kategori) == 'MONEY BOUQUET') selected @endif>MONEY BOUQUET</option>
+                            <option value="ARTIFICIAL FLOWERS BOUQUET" @if(old('kategori', $produk->kategori) == 'ARTIFICIAL FLOWERS BOUQUET') selected @endif>ARTIFICIAL FLOWERS BOUQUET</option>
+                            <option value="SNACK BOUQUET" @if(old('kategori', $produk->kategori) == 'SNACK BOUQUET') selected @endif>SNACK BOUQUET</option>
+                            <option value="BOUQUET BONEKA" @if(old('kategori', $produk->kategori) == 'BOUQUET BONEKA') selected @endif>BOUQUET BONEKA</option>
+                            <option value="BUTTERFLY BOUQUET" @if(old('kategori', $produk->kategori) == 'BUTTERFLY BOUQUET') selected @endif>BUTTERFLY BOUQUET</option>
+                            <option value="PIPE FLOWERS BOUQUET" @if(old('kategori', $produk->kategori) == 'PIPE FLOWERS BOUQUET') selected @endif>PIPE FLOWERS BOUQUET</option>
+                            <option value="BOUQUET FOTO" @if(old('kategori', $produk->kategori) == 'BOUQUET FOTO') selected @endif>BOUQUET FOTO</option>
+                            <option value="BAG & BLOOM BOX" @if(old('kategori', $produk->kategori) == 'BAG & BLOOM BOX') selected @endif>BAG & BLOOM BOX</option>
+                            <option value="FIGURA" @if(old('kategori', $produk->kategori) == 'FIGURA') selected @endif>FIGURA</option>
                             {{-- Tambahkan kategori lain jika perlu --}}
                         </select>
                     </div>
@@ -49,7 +53,7 @@
 
                     <div class="mb-4">
                         <label for="harga" class="block text-sm font-medium text-gray-700">Harga (Rp)</label>
-                        <input type="number" name="harga" id="harga" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ old('harga', $produk->harga) }}" required>
+                        <input type="number" name="harga" id="harga" step="5000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ old('harga', $produk->harga) }}" required>
                     </div>
 
                     <div class="mb-4">

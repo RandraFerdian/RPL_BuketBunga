@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daara Bouquet - Kado Terindah untuk Momen Spesial</title>
-
+    <link rel="icon" href="{{ asset('images/favicon.png') }}" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -32,22 +32,23 @@
                 <a href="#produk" class="hidden md:block text-gray-600 hover:text-pink-500">Produk</a>
                 <a href="#tentang" class="hidden md:block text-gray-600 hover:text-pink-500">Tentang</a>
                 <a href="{{ route('katalog.index') }}" class="px-5 py-2 bg-pink-500 text-white rounded-full text-sm font-semibold hover:bg-pink-600 transition-colors">Katalog</a>
-                <div>
+                <div class="flex items-center space-x-4">
                     @auth
                     {{-- Jika pengguna sudah login, tampilkan tombol Logout --}}
-                    {{-- Logout harus menggunakan form dengan method POST untuk keamanan --}}
+                    <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}" class="px-5 py-2 bg-pink-100 text-pink-600 rounded-full text-sm font-semibold hover:bg-pink-200 transition-colors">Dashboard</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <a href="{{ route('logout') }}"
                             onclick="event.preventDefault(); this.closest('form').submit();"
-                            class="px-5 py-2 border border-white rounded-full text-sm font-semibold hover:bg-white hover:text-gray-800 transition-colors">
+                            class="text-gray-600 hover:text-pink-500">
                             Logout
                         </a>
                     </form>
                     @else
-                    {{-- Jika belum login, tampilkan tombol Login --}}
-                    <a href="{{ route('login') }}" class="px-5 py-2 border border-white rounded-full text-sm font-semibold hover:bg-white hover:text-gray-800 transition-colors">
-                        Login
+                    {{-- Jika belum login, tampilkan tombol Login dan Daftar --}}
+                    <a href="{{ route('login') }}" class="text-gray-600 hover:text-pink-500 text-sm font-medium">Login</a>
+                    <a href="{{ route('register') }}" class="px-5 py-2 bg-pink-500 text-white rounded-full text-sm font-semibold hover:bg-pink-600 transition-colors">
+                        Daftar
                     </a>
                     @endauth
                 </div>
