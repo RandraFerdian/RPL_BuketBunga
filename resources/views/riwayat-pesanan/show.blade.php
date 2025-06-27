@@ -58,9 +58,9 @@
                     <div class="flex justify-between items-center">
                         <div>
                             <p class="font-medium text-gray-800">{{ $produk->nama_produk }}</p>
-                            <p class="text-sm text-gray-500">{{ $produk->pivot->jumlah }} x Rp{{ number_format($produk->pivot->harga_satuan) }}</p>
+                            <p class="text-sm text-gray-500">{{ $produk->pivot->jumlah }} x Rp{{ number_format($produk->pivot->harga_saat_transaksi) }}</p>
                         </div>
-                        <p class="font-medium text-gray-800">Rp{{ number_format($produk->pivot->jumlah * $produk->pivot->harga_satuan) }}</p>
+                        <p class="font-medium text-gray-800">Rp{{ number_format($produk->pivot->jumlah * $produk->pivot->harga_saat_transaksi) }}</p>
                     </div>
                     @endforeach
                 </div>
