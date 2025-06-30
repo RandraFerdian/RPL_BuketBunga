@@ -26,16 +26,9 @@
                     <div class="mb-4">
                         <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
                         <select name="kategori" id="kategori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
-                            <option value="MONEY BOUQUET" @if(old('kategori', $produk->kategori) == 'MONEY BOUQUET') selected @endif>MONEY BOUQUET</option>
-                            <option value="ARTIFICIAL FLOWERS BOUQUET" @if(old('kategori', $produk->kategori) == 'ARTIFICIAL FLOWERS BOUQUET') selected @endif>ARTIFICIAL FLOWERS BOUQUET</option>
-                            <option value="SNACK BOUQUET" @if(old('kategori', $produk->kategori) == 'SNACK BOUQUET') selected @endif>SNACK BOUQUET</option>
-                            <option value="BOUQUET BONEKA" @if(old('kategori', $produk->kategori) == 'BOUQUET BONEKA') selected @endif>BOUQUET BONEKA</option>
-                            <option value="BUTTERFLY BOUQUET" @if(old('kategori', $produk->kategori) == 'BUTTERFLY BOUQUET') selected @endif>BUTTERFLY BOUQUET</option>
-                            <option value="PIPE FLOWERS BOUQUET" @if(old('kategori', $produk->kategori) == 'PIPE FLOWERS BOUQUET') selected @endif>PIPE FLOWERS BOUQUET</option>
-                            <option value="BOUQUET FOTO" @if(old('kategori', $produk->kategori) == 'BOUQUET FOTO') selected @endif>BOUQUET FOTO</option>
-                            <option value="BAG & BLOOM BOX" @if(old('kategori', $produk->kategori) == 'BAG & BLOOM BOX') selected @endif>BAG & BLOOM BOX</option>
-                            <option value="FIGURA" @if(old('kategori', $produk->kategori) == 'FIGURA') selected @endif>FIGURA</option>
-                            {{-- Tambahkan kategori lain jika perlu --}}
+                            @foreach($kategoris as $item_kategori)
+                            <option value="{{ $item_kategori->nama_kategori }}" @if(old('kategori', $produk->kategori) == $item_kategori->nama_kategori) selected @endif>{{ $item_kategori->nama_kategori }}</option>
+                            @endforeach
                         </select>
                     </div>
 

@@ -9,6 +9,7 @@ use App\Http\Controllers\OrderHistoryController;
 use App\Http\Controllers\PesananAdminController;
 use App\Http\Controllers\ProdukAdminController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\KategoriController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +45,7 @@ Route::controller(CartController::class)->prefix('keranjang')->name('cart.')->gr
 //======================================================================
 
 Route::middleware('auth')->group(function () {
-    
+
     // Rute dashboard utama untuk pengguna biasa
     Route::get('/dashboard', fn() => redirect()->route('katalog.index'))->name('dashboard');
 
@@ -71,17 +72,29 @@ Route::middleware('auth')->group(function () {
     Route::controller(OrderHistoryController::class)->prefix('riwayat-pesanan')->name('order.')->group(function () {
         Route::get('/', 'index')->name('history');
         Route::get('/{transaksi}', 'show')->name('show');
+        Route::post('/{transaksi}/pesan-lagi', 'reorder')->name('reorder'); // <-- TAMBAHKAN BARIS INI
     });
-
 });
 
 
 //======================================================================
 // RUTE KHUSUS ADMIN (Wajib Login sebagai Admin)
 //======================================================================
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    Route::resource('produk', ProdukAdminController::class);
+    Route::resource('kategori', KategoriController::class)->except('show'); // <-- Titik koma ditambahkan
+    Route::resource('pesanan', PesananAdminController::class)
+        ->parameters(['pesanan' => 'transaksi'])
+        ->except(['create', 'store', 'edit']);
+
+    Route::patch('/pesanan/{transaksi}/update-payment', [PesananAdminController::class, 'updatePaymentStatus'])->name('pesanan.updatePayment');
+});
+
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    
+
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
     // Manajemen Produk (CRUD)
@@ -93,7 +106,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('pesanan', PesananAdminController::class)
         ->parameters(['pesanan' => 'transaksi'])
         ->except(['create', 'store', 'edit']);
-
 });
 
 

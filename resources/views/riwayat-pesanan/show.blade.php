@@ -23,13 +23,13 @@
                             <strong>Pembayaran:</strong>
                             {{-- [REVISI] Menggunakan komponen badge yang konsisten --}}
                             @if($transaksi->status_pembayaran == 'lunas')
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                    Lunas
-                                </span>
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Lunas
+                            </span>
                             @else
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                    Belum Lunas
-                                </span>
+                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                Belum Lunas
+                            </span>
                             @endif
                         </p>
                         <p class="text-gray-600">
@@ -72,8 +72,16 @@
                 </div>
             </div>
 
-            <div class="text-center pt-6">
-                <a href="{{ route('order.history') }}" class="text-pink-600 hover:text-pink-900 font-semibold">&larr; Kembali ke Riwayat Pesanan</a>
+            <div class="text-center pt-6 space-y-4">
+                {{-- Tombol "Pesan Lagi" --}}
+                <form action="{{ route('order.reorder', $transaksi->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-pink-500 text-white font-bold rounded-lg hover:bg-pink-600 transition-colors shadow-lg">
+                        Pesan Lagi
+                    </button>
+                </form>
+                {{-- Link "Kembali" --}}
+                <a href="{{ route('order.history') }}" class="inline-block text-gray-600 hover:text-gray-900 font-semibold">&larr; Kembali ke Riwayat Pesanan</a>
             </div>
         </div>
     </div>
