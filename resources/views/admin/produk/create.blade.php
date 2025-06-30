@@ -42,6 +42,15 @@
                             <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
                             <select name="kategori" id="kategori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
                                 <option value="" disabled selected>Pilih Kategori</option>
+                                @foreach($kategoris as $kategori)
+                                <option value="{{ $kategori->nama_kategori }}" @if(old('kategori')==$kategori->nama_kategori) selected @endif>{{ $kategori->nama_kategori }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <!-- <div class="mb-4">
+                            <label for="kategori" class="block text-sm font-medium text-gray-700">Kategori</label>
+                            <select name="kategori" id="kategori" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                <option value="" disabled selected>Pilih Kategori</option>
                                 <option value="MONEY BOUQUET" @if(old('kategori')=='MONEY BOUQUET' ) selected @endif>MONEY BOUQUET</option>
                                 <option value="ARTIFICIAL FLOWERS BOUQUET" @if(old('kategori')=='ARTIFICIAL FLOWERS BOUQUET' ) selected @endif>ARTIFICIAL FLOWERS BOUQUET</option>
                                 <option value="SNACK BOUQUET" @if(old('kategori')=='SNACK BOUQUET' ) selected @endif>SNACK BOUQUET</option>
@@ -53,7 +62,7 @@
                                 <option value="FIGURA" @if(old('kategori')=='FIGURA' ) selected @endif>FIGURA</option>
                                 {{-- Tambahkan kategori lain jika perlu --}}
                             </select>
-                        </div>
+                        </div> -->
                         <div class="mb-4">
                             <label for="ukuran" class="block text-sm font-medium text-gray-700">Ukuran</label>
                             <select name="ukuran" id="ukuran" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>

@@ -6,6 +6,7 @@ use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Arr;
+use App\Models\Kategori;
 
 class ProdukAdminController extends Controller
 {
@@ -23,7 +24,8 @@ class ProdukAdminController extends Controller
      */
     public function create()
     {
-        return view('admin.produk.create');
+        $kategoris = Kategori::orderBy('nama_kategori')->get();
+        return view('admin.produk.create', compact('kategoris'));
     }
 
     /**
@@ -50,7 +52,7 @@ class ProdukAdminController extends Controller
 
         // 3. Pisahkan data produk dari data stok
         $produkData = Arr::except($validatedData, ['jumlah']);
-        
+
         // 4. Buat record baru di tabel 'produk'
         $produk = Produk::create($produkData);
 
@@ -70,7 +72,8 @@ class ProdukAdminController extends Controller
      */
     public function edit(Produk $produk)
     {
-        return view('admin.produk.edit', compact('produk'));
+        $kategoris = Kategori::orderBy('nama_kategori')->get();
+        return view('admin.produk.edit', compact('kategoris', 'produk'));
     }
 
     /**
@@ -114,7 +117,7 @@ class ProdukAdminController extends Controller
         if ($produk->gambar) {
             Storage::disk('public')->delete($produk->gambar);
         }
-        
+
         $produk->stok()->delete();
         $produk->delete();
 
