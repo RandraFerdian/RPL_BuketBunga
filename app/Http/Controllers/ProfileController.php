@@ -28,27 +28,18 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        // Ganti method update yang lama dengan yang ini
-        $user = $request->user();
-
-        // Validasi data input, termasuk username
-        $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:50', Rule::unique(User::class)->ignore($user->id)],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
-        ]);
-
-        // Mengisi data yang divalidasi ke model user
-        $user->fill($validatedData);
+        // Mengisi model user dengan data yang sudah divalidasi
+        $request->user()->fill($request->validated());
 
         // Jika email diubah, reset status verifikasi email
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
         }
 
-        // Simpan perubahan
-        $user->save();
+        // INI BAGIAN KUNCI: Menyimpan perubahan ke database
+        $request->user()->save();
 
+        // Arahkan kembali ke halaman edit dengan pesan status
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
